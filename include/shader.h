@@ -11,8 +11,8 @@ class shader
         void link();
         void bind();
 
+        unsigned int program_id;
     private:
-        unsigned int program;
         unsigned int vertex_id;
         unsigned int fragment_id;
 };

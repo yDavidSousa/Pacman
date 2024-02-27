@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.2)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 project(pacman)
 
 # DEPENDENCIES DIRECTORIES
@@ -12,9 +16,9 @@ set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-add_executable(pacman ${INCLUDE_DIR}/mesh.h ${INCLUDE_DIR}/shader.h main.cpp src/mesh.cpp src/shader.cpp)
+add_executable(pacman src/shader.cpp src/mesh.cpp main.cpp)
 
-target_include_directories(pacman PUBLIC $<BUILD_INTERFACE:${INCLUDE_DIR}>)
+target_include_directories(pacman PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 target_include_directories(pacman PUBLIC ${DEPS_INCLUDE_DIR})
 target_link_directories(pacman PUBLIC ${DEPS_LIBRARIES_DIR})

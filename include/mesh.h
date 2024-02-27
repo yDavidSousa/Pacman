@@ -1,19 +1,20 @@
 #ifndef PACMAN_MESH_H
 #define PACMAN_MESH_H
 
+#include <vector>
+
 class mesh
 {
     public:
-        mesh(const float *vertices, const unsigned int *triangles);
+        mesh(std::vector<float> vertices);
         ~mesh();
 
-        void bind_layout();
+        void bind();
         void draw();
-    private:
-        unsigned int VBO, VAO, EBO;
 
-        const float *m_vertices;
-        const unsigned int *m_triangles;
+    private:
+        unsigned int va_id, vb_id;
+        std::vector<float> vb_data;
 };
 
 #endif

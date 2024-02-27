@@ -6,12 +6,12 @@
 
 shader::shader()
 {
-    program = glCreateProgram();
+    program_id = glCreateProgram();
 }
 
 shader::~shader()
 {
-    glDeleteProgram(program);
+    glDeleteProgram(program_id);
 }
 
 void shader::create(const char *vertex_src, const char *fragment_src)
@@ -46,15 +46,16 @@ void shader::create(const char *vertex_src, const char *fragment_src)
 
 void shader::link()
 {
-    glAttachShader(program, vertex_id);
-    glAttachShader(program, fragment_id);
-    glLinkProgram(program);
+    glAttachShader(program_id, vertex_id);
+    glAttachShader(program_id, fragment_id);
+    glLinkProgram(program_id);
 
     int success;
     char infoLog[512];
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(program, 512, NULL, infoLog);
+    glGetProgramiv(program_id, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(program_id, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
 
@@ -64,5 +65,5 @@ void shader::link()
 
 void shader::bind()
 {
-    glUseProgram(program);
+    glUseProgram(program_id);
 }
