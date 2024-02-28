@@ -1,28 +1,45 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-
-#include "mesh.h"
-#include "shader.h"
-
 #define GL_SILENCE_DEPRECATION
+
+#include "gl_renderer.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <GLFW/glfw3.h>
+#include <iostream>
 
 const unsigned int SCR_WIDTH = 512;
 const unsigned int SCR_HEIGHT = 640;
 
-const char *fragment_shader_src = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
-    "}\n\0";
 const char *vertex_shader_src = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
+    "\n"
+    "out vec3 ourColor;\n"
+    "out vec2 TexCoord;\n"
+    "\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
+    "   ourColor = aColor;\n"
+    "   TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n"
     "}\0";
+const char *fragment_shader_src = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "\n"
+    "in vec3 ourColor;\n"
+    "in vec2 TexCoord;\n"
+    "\n"
+    "uniform sampler2D texture1;\n"
+    "\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = texture(texture1, TexCoord);\n"
+    "}\n\0";
 
 int main(int argc, char** argv)
 {
@@ -49,24 +66,32 @@ int main(int argc, char** argv)
     }
     glfwMakeContextCurrent(window);
 
-    glewExperimental = true;
-    if(glewInit() != GLEW_OK)
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+    gl_renderer renderer;
+
+    auto standard_shader = renderer.create_shader();
+    standard_shader->create(vertex_shader_src, fragment_shader_src);
+    standard_shader->link();
+
+    auto quad_mesh = renderer.create_mesh();
+    quad_mesh->set_vertices(quad_vertices);
+    quad_mesh->set_indices(quad_indices);
+    quad_mesh->bind();
+
+    auto texture = renderer.create_texture();
+    texture->set_info();
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("/Users/davidsousa/Documents/projects/pacman/resources/wall.jpg", &width, &height, &nrChannels, 0);
+    if(data)
     {
-        return -1;
+        texture->set_data(width, height, data);
     }
-
-    const std::vector<float> vb_data = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f
-    };
-
-    mesh triangle_mesh(vb_data);
-    triangle_mesh.bind();
-
-    shader standard_shader = shader();
-    standard_shader.create(vertex_shader_src, fragment_shader_src);
-    standard_shader.link();
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
@@ -78,14 +103,13 @@ int main(int argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        standard_shader.bind();
-        triangle_mesh.draw();
+        texture->bind();
+        standard_shader->bind();
+        quad_mesh->draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    standard_shader.~shader();
 
     glfwTerminate();
 
