@@ -11,8 +11,12 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-const unsigned int SCR_WIDTH = 512;
-const unsigned int SCR_HEIGHT = 640;
+const unsigned int SCALE = 3;
+
+const unsigned int PIXELS_TILE = 8;
+
+const unsigned int SCR_WIDTH = 224 * SCALE;
+const unsigned int SCR_HEIGHT = 288 * SCALE;
 
 float window_width = SCR_WIDTH;
 float window_height = SCR_HEIGHT;
@@ -96,7 +100,7 @@ int main(int argc, char** argv)
     auto texture = renderer.create_texture();
     texture->set_info();
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("/Users/davidsousa/Documents/projects/pacman/resources/wall.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("/Users/davidsousa/Documents/projects/pacman/resources/pacman.png", &width, &height, &nrChannels, 0);
     if(data)
     {
         texture->set_data(width, height, data);
@@ -125,24 +129,19 @@ int main(int argc, char** argv)
         standard_shader->bind();
 
         glm::mat4 projection = glm::mat4(1.0f);
-
-        float window_aspect = window_width / window_height;
-        if(window_aspect >= target_aspect)
-        {
-            projection = glm::ortho(-window_aspect, window_aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-        } 
-        else
-        { 
-            projection = glm::ortho(-1.0f, 1.0f, -target_aspect, target_aspect, -1.0f, 1.0f);
-        }
-
+        projection = glm::ortho(0.0f, target_width, 0.0f, target_height, -1.0f, 1.0f);
         standard_shader->set_uniform_mat4("projection", projection);
 
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::translate(view, camera_position);
         standard_shader->set_uniform_mat4("view", view);
     
+        glm::vec2 position = glm::vec2(0.0f, 0.0f);
+        glm::vec2 size = glm::vec2(11.0f * SCALE, 11.0f * SCALE);
+
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position, 0.0f));  
+        model = glm::scale(model, glm::vec3(size, 1.0f)); 
         standard_shader->set_uniform_mat4("model", model);
     
         quad_mesh->draw();
@@ -168,7 +167,7 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
+    float cameraSpeed = static_cast<float>(200.5 * deltaTime);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera_position += cameraSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
