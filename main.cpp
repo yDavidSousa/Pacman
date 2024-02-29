@@ -2,9 +2,6 @@
 
 #include "src/include/gl_renderer.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -97,19 +94,13 @@ int main(int argc, char** argv)
     quad_mesh->set_indices(quad_indices);
     quad_mesh->bind();
 
-    auto texture = renderer.create_texture();
-    texture->set_info();
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("/Users/davidsousa/Documents/projects/pacman/resources/pacman.png", &width, &height, &nrChannels, 0);
-    if(data)
-    {
-        texture->set_data(width, height, data);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    auto mockup_texture = renderer.create_texture();
+    mockup_texture->set_info();
+    load_texture("/Users/davidsousa/Documents/projects/pacman/resources/mockup.png", false, mockup_texture);
+
+    auto pacman_texture = renderer.create_texture();
+    pacman_texture->set_info();
+    load_texture("/Users/davidsousa/Documents/projects/pacman/resources/pacman.png", true, pacman_texture);
 
     const float target_width = static_cast<float>(SCR_WIDTH);
     const float target_height = static_cast<float>(SCR_HEIGHT);
@@ -125,11 +116,26 @@ int main(int argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        texture->bind();
+        mockup_texture->bind();
         standard_shader->bind();
 
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::ortho(0.0f, target_width, 0.0f, target_height, -1.0f, 1.0f);
+        float window_aspect = window_width / window_height;
+        float h = window_height / target_height;
+        float w = window_width / target_width;
+
+        glm::vec2 viewport = glm::vec2(1, 1);
+        if(window_aspect >= target_aspect)
+        {
+            projection = glm::ortho(-window_aspect, window_aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+            viewport = glm::vec2((window_aspect + target_aspect) - 2.0f, 1);
+        } 
+        else
+        {
+            projection = glm::ortho(-1.0f, 1.0f, -target_aspect, target_aspect, -1.0f, 1.0f);
+            viewport = glm::vec2(1, target_aspect);
+        }
+        //std::cout << viewport.x << ", "<< viewport.y << std::endl;
         standard_shader->set_uniform_mat4("projection", projection);
 
         glm::mat4 view = glm::mat4(1.0f);
@@ -137,13 +143,25 @@ int main(int argc, char** argv)
         standard_shader->set_uniform_mat4("view", view);
     
         glm::vec2 position = glm::vec2(0.0f, 0.0f);
-        glm::vec2 size = glm::vec2(11.0f * SCALE, 11.0f * SCALE);
 
         glm::mat4 model = glm::mat4(1.0f);
+        glm::vec2 size = viewport;
         model = glm::translate(model, glm::vec3(position, 0.0f));  
         model = glm::scale(model, glm::vec3(size, 1.0f)); 
         standard_shader->set_uniform_mat4("model", model);
     
+        quad_mesh->draw();
+
+        pacman_texture->bind();
+        standard_shader->bind();
+
+        standard_shader->set_uniform_mat4("projection", projection);
+        standard_shader->set_uniform_mat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(glm::vec2(0.0f, 0.0f), 0.0f));
+        standard_shader->set_uniform_mat4("model", model);
+
+
         quad_mesh->draw();
 
         glfwSwapBuffers(window);
@@ -167,7 +185,7 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = static_cast<float>(200.5 * deltaTime);
+    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera_position += cameraSpeed * glm::vec3(0.0f, -1.0f, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
