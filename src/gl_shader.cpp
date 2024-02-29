@@ -1,6 +1,7 @@
-#include "gl_shader.h"
+#include "include/gl_shader.h"
 
 #include <GL/glew.h>
+
 #include <iostream>
 
 gl_shader::gl_shader()
@@ -65,4 +66,10 @@ void gl_shader::link()
 void gl_shader::bind()
 {
     glUseProgram(program_id);
+}
+
+void gl_shader::set_uniform_mat4(const char *name, glm::mat4 value)
+{
+    unsigned int location = glGetUniformLocation(program_id, name);
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }

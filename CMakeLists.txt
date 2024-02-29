@@ -18,7 +18,7 @@ find_package(glfw3 3.3 REQUIRED)
 
 add_executable(pacman src/gl_texture.cpp src/gl_renderer.cpp src/gl_shader.cpp src/gl_mesh.cpp main.cpp)
 
-target_include_directories(pacman PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+target_include_directories(pacman PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>)
 
 target_include_directories(pacman PUBLIC ${DEPS_INCLUDE_DIR})
 target_link_directories(pacman PUBLIC ${DEPS_LIBRARIES_DIR})
