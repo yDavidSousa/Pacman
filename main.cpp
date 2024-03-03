@@ -2,9 +2,6 @@
 
 #include "src/include/gl_renderer.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -22,19 +19,19 @@ const unsigned int GRID_TILE = 8 * PIXEL_SCALING;
 const unsigned int TARGET_VIEWPORT_WIDTH = PIXEL_WIDTH * PIXEL_SCALING;
 const unsigned int TARGET_VIEWPORT_HEIGHT = PIXEL_HEIGHT * PIXEL_SCALING;
 
-const char *vertex_shader_src = "#version 330 core\n"
-    "layout (location = 0) in vec2 a_pos;\n"
+const char* std_vert_source = "#version 330 core\n"
+    "layout (location = 0) in vec2 a_vert;\n"
     "layout (location = 1) in vec2 a_tex;\n"
+    "layout (location = 2) in mat4 a_model;\n"
     "out vec2 v_tex;\n"
-    "uniform mat4 u_model;\n"
     "uniform mat4 u_view;\n"
     "uniform mat4 u_projection;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = u_projection * u_view * u_model * vec4(a_pos.xy, 0.0f, 1.0f);\n"
+    "   gl_Position = u_projection * u_view * a_model * vec4(a_vert.xy, 0.0f, 1.0f);\n"
     "   v_tex = a_tex;\n"
     "}\0";
-const char *fragment_shader_src = "#version 330 core\n"
+const char* std_frag_source = "#version 330 core\n"
     "out vec4 o_color;\n"
     "in vec2 v_tex;\n"
     "uniform sampler2D u_texture;\n"
@@ -81,23 +78,10 @@ int main(int argc, char** argv)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     gl_renderer renderer;
-
-    auto standard_shader = renderer.create_shader();
-    standard_shader->create(vertex_shader_src, fragment_shader_src);
-    standard_shader->link();
-
-    auto quad_mesh = renderer.create_mesh();
-    quad_mesh->set_vertices(quad_vertices);
-    quad_mesh->set_indices(quad_indices);
-    quad_mesh->bind();
-
-    auto tile_texture = renderer.create_texture();
-    tile_texture->set_info();
-
-    std::filesystem::path current_path = std::filesystem::current_path();
-    current_path.append("../data/sprite.png");
-
-    load_texture(current_path.string().c_str(), true, tile_texture);
+    auto standard_shader = renderer.create_shader(std_vert_source, std_frag_source);
+    auto quad_mesh = renderer.create_mesh(mesh_data::get_primitive_quad());
+    std::filesystem::path texture_path = std::filesystem::current_path().append("../data/sprite.png");
+    auto tilemap_texture = renderer.create_texture(texture_path.c_str());
 
     while(glfwWindowShouldClose(window) == false)
     {
@@ -109,8 +93,8 @@ int main(int argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tile_texture->bind();
-        standard_shader->bind();
+        tilemap_texture->bind();
+        standard_shader->use();
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::ortho(-viewport_width * 0.5f, viewport_width * 0.5f, -viewport_height * 0.5f, viewport_height * 0.5f, -1.0f, 1.0f);
@@ -120,6 +104,7 @@ int main(int argc, char** argv)
         view = glm::translate(view, camera_position);
         standard_shader->set_uniform_mat4("u_view", view);
 
+        std::vector<glm::mat4> models;
         glm::vec2 grid_offset = glm::vec2((TARGET_VIEWPORT_WIDTH - GRID_TILE) * 0.5f, (TARGET_VIEWPORT_HEIGHT - GRID_TILE) * 0.5f);
         glm::vec2 size = glm::vec2(7 * PIXEL_SCALING, 7 * PIXEL_SCALING);
         for (int y = 0; y < GRID_HEIGHT; y++)
@@ -131,11 +116,11 @@ int main(int argc, char** argv)
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(position, 0.0f));  
                 model = glm::scale(model, glm::vec3(size, 1.0f)); 
-                standard_shader->set_uniform_mat4("u_model", model);
-
-                quad_mesh->draw();
+                models.push_back(model);
             }
         }
+        quad_mesh->draw(models);
+        //renderer.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -2,13 +2,14 @@
 #define PACMAN_GL_MESH_H
 
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 const std::vector<float> quad_vertices = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f,       1.0f, 1.0f,   // top right
-     0.5f, -0.5f,       1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f,       0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f,       0.0f, 1.0f    // top left 
+     0.5f,  0.5f, // top right
+     0.5f, -0.5f, // bottom right
+    -0.5f, -0.5f, // bottom left
+    -0.5f,  0.5f  // top left 
 };
 
 const std::vector<unsigned int> quad_indices = {
@@ -16,21 +17,37 @@ const std::vector<unsigned int> quad_indices = {
     1, 2, 3   // second Triangle
 };
 
+const std::vector<float> quad_text_coords = {
+    1.0f, 1.0f, // top right
+    1.0f, 0.0f, // bottom right
+    0.0f, 0.0f, // bottom left
+    0.0f, 1.0f  // top left 
+};
+
+struct mesh_data
+{
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<float> tex_coords;
+
+    mesh_data();
+    mesh_data(std::vector<float> vertices, std::vector<unsigned int> indices, std::vector<float> tex_coords);
+
+    static const mesh_data get_primitive_quad();
+};
+
 class gl_mesh
 {
     public:
-        gl_mesh();
+        gl_mesh(std::vector<float> vertices, std::vector<unsigned int> indices, std::vector<float> tex_coords);
         ~gl_mesh();
 
-        void set_vertices(std::vector<float> vertices);
-        void set_indices(std::vector<unsigned int> indices);
-        void bind();
-        void draw();
-
+        void draw(const std::vector<glm::mat4>& models);
     private:
-        unsigned int va_id, vb_id, eb_id;
-        std::vector<float> m_vertices;
-        std::vector<unsigned int> m_indices;
+        unsigned int vao, ebo, instance_bo;
+        unsigned int vbo_vertices;
+        unsigned int vbo_tex_coords;
+        unsigned int vbo_color;
 };
 
 #endif
