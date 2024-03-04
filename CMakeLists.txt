@@ -14,7 +14,7 @@ set(DEPS_LIBRARIES_DIR "${DEPS_ROOT_DIR}/lib/")
 
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-add_executable(pacman src/gl_texture.cpp src/gl_renderer.cpp src/gl_shader.cpp src/gl_mesh.cpp main.cpp)
+add_executable(pacman src/sprite_asset.cpp src/gl_texture.cpp src/gl_renderer.cpp src/gl_shader.cpp src/gl_mesh.cpp main.cpp)
 
 target_include_directories(pacman PUBLIC BUILD_INTERFACE<${CMAKE_CURRENT_SOURCE_DIR}/src/include>)
 

@@ -10,6 +10,8 @@ gl_renderer::gl_renderer()
     {
         return;
     }
+
+    glEnable(GL_TEXTURE_2D);
 }
 
 std::unique_ptr<gl_shader> gl_renderer::create_shader(const char* vert_source, const char* frag_source)
@@ -33,7 +35,7 @@ std::unique_ptr<gl_texture> gl_renderer::create_texture(const char* path)
     {
         std::cout << "Failed to load texture" << std::endl;
     }
-    auto texture_instance = std::make_unique<gl_texture>(width, height, data);
+    auto texture_instance = std::make_unique<gl_texture>(width, height, nrChannels, data);
     stbi_image_free(data);
     return texture_instance;
 }

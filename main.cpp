@@ -1,5 +1,6 @@
 #define GL_SILENCE_DEPRECATION
 
+#include "src/include/sprite_asset.h"
 #include "src/include/gl_renderer.h"
 
 #include <GL/glew.h>
@@ -79,9 +80,26 @@ int main(int argc, char** argv)
 
     gl_renderer renderer;
     auto standard_shader = renderer.create_shader(std_vert_source, std_frag_source);
-    auto quad_mesh = renderer.create_mesh(mesh_data::get_primitive_quad());
-    std::filesystem::path texture_path = std::filesystem::current_path().append("../data/sprite.png");
-    auto tilemap_texture = renderer.create_texture(texture_path.c_str());
+    std::filesystem::path texture_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
+    auto tilesheet_texture = renderer.create_texture(texture_path.c_str());
+
+    sprite_asset tilesheet(tilesheet_texture);
+    std::vector<sprite_asset> tiles = tilesheet.slice_count(16, 9, {1, 1}, {0, 0});
+
+    sprite_asset tile = tiles[0];
+    std::vector<float> tex_coord = 
+    {
+        (tile.x + tile.w) / tilesheet.w, (tile.y + tile.h) / tilesheet.h,
+        (tile.x + tile.w) / tilesheet.w, tile.y / tilesheet.h,
+        tile.x / tilesheet.w, tile.y / tilesheet.h,
+        tile.x / tilesheet.w, (tile.y + tile.h) / tilesheet.h
+    };
+
+    std::cout << "Min: {" << tile.x / tilesheet.w << ", " << tile.y / tilesheet.h  << "}" << std::endl;
+    std::cout << "Max: {" << (tile.x + tile.w) / tilesheet.w << ", " << (tile.y + tile.h) / tilesheet.h << "}" << std::endl;
+
+    mesh_data mesh(quad_vertices, quad_indices, tex_coord);
+    auto quad_mesh = renderer.create_mesh(mesh);
 
     while(glfwWindowShouldClose(window) == false)
     {
@@ -93,7 +111,7 @@ int main(int argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tilemap_texture->bind();
+        tilesheet_texture->bind();
         standard_shader->use();
 
         glm::mat4 projection = glm::mat4(1.0f);
@@ -105,22 +123,20 @@ int main(int argc, char** argv)
         standard_shader->set_uniform_mat4("u_view", view);
 
         std::vector<glm::mat4> models;
+        std::vector<float*> tex_coords;
         glm::vec2 grid_offset = glm::vec2((TARGET_VIEWPORT_WIDTH - GRID_TILE) * 0.5f, (TARGET_VIEWPORT_HEIGHT - GRID_TILE) * 0.5f);
-        glm::vec2 size = glm::vec2(7 * PIXEL_SCALING, 7 * PIXEL_SCALING);
         for (int y = 0; y < GRID_HEIGHT; y++)
         {
             for (int x = 0; x < GRID_WIDTH; x++)
             {
-                glm::vec2 position = glm::vec2(x * GRID_TILE - grid_offset.x, y * GRID_TILE - grid_offset.y);
- 
                 glm::mat4 model = glm::mat4(1.0f);
+                glm::vec2 position = glm::vec2(x * GRID_TILE - grid_offset.x, y * GRID_TILE - grid_offset.y);
                 model = glm::translate(model, glm::vec3(position, 0.0f));  
-                model = glm::scale(model, glm::vec3(size, 1.0f)); 
+                model = glm::scale(model, glm::vec3(glm::vec2(GRID_TILE, GRID_TILE), 1.0f)); 
                 models.push_back(model);
             }
         }
         quad_mesh->draw(models);
-        //renderer.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
