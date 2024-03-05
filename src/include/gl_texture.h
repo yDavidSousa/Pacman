@@ -6,7 +6,7 @@
 class gl_texture
 {
     public:
-        gl_texture(int width, int height, int nr_channel, unsigned char* data);
+        gl_texture(int width, int height, int channels, unsigned char* data);
         ~gl_texture();
 
         void bind();
@@ -14,7 +14,7 @@ class gl_texture
         int get_width() const;
         int get_height() const;
     private:
-        unsigned int m_tbo;
+        uint m_tbo;
         int m_width, m_height;
 };
 

@@ -1,14 +1,18 @@
-#define GL_SILENCE_DEPRECATION
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+#endif
 
 #include "src/include/sprite_asset.h"
 #include "src/include/gl_renderer.h"
 
+#include <filesystem>
+#include <iostream>
+#include <vector>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <filesystem>
-#include <iostream>
-
+//CONST
 const unsigned int PIXEL_SCALING = 3;
 const unsigned int PIXEL_WIDTH = 224;
 const unsigned int PIXEL_HEIGHT = 288;
@@ -20,37 +24,16 @@ const unsigned int GRID_TILE = 8 * PIXEL_SCALING;
 const unsigned int TARGET_VIEWPORT_WIDTH = PIXEL_WIDTH * PIXEL_SCALING;
 const unsigned int TARGET_VIEWPORT_HEIGHT = PIXEL_HEIGHT * PIXEL_SCALING;
 
-const char* std_vert_source = "#version 330 core\n"
-    "layout (location = 0) in vec2 a_vert;\n"
-    "layout (location = 1) in vec2 a_tex;\n"
-    "layout (location = 2) in mat4 a_model;\n"
-    "out vec2 v_tex;\n"
-    "uniform mat4 u_view;\n"
-    "uniform mat4 u_projection;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = u_projection * u_view * a_model * vec4(a_vert.xy, 0.0f, 1.0f);\n"
-    "   v_tex = a_tex;\n"
-    "}\0";
-const char* std_frag_source = "#version 330 core\n"
-    "out vec4 o_color;\n"
-    "in vec2 v_tex;\n"
-    "uniform sampler2D u_texture;\n"
-    "void main()\n"
-    "{\n"
-    "   o_color = texture(u_texture, v_tex);\n"
-    "}\n\0";
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-
+//GLOBAL
 float viewport_width = TARGET_VIEWPORT_WIDTH;
 float viewport_height = TARGET_VIEWPORT_HEIGHT;
 
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+float deltaTime = 0.0f, lastFrame = 0.0f;
 
 glm::vec3 camera_position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
 
 int main(int argc, char** argv)
 {
@@ -79,28 +62,15 @@ int main(int argc, char** argv)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     gl_renderer renderer;
-    auto standard_shader = renderer.create_shader(std_vert_source, std_frag_source);
-    std::filesystem::path texture_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
-    auto tilesheet_texture = renderer.create_texture(texture_path.c_str());
+    auto standard_shader = renderer.create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
-    sprite_asset tilesheet(tilesheet_texture);
-    std::vector<sprite_asset> tiles = tilesheet.slice_count(16, 9, {1, 1}, {0, 0});
+    std::filesystem::path maze_tilesheet_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
+    auto tilesheet_texture = renderer.create_texture(maze_tilesheet_path.c_str());
 
-    sprite_asset tile = tiles[0];
-    std::vector<float> tex_coord = 
-    {
-        (tile.x + tile.w) / tilesheet.w, (tile.y + tile.h) / tilesheet.h,
-        (tile.x + tile.w) / tilesheet.w, tile.y / tilesheet.h,
-        tile.x / tilesheet.w, tile.y / tilesheet.h,
-        tile.x / tilesheet.w, (tile.y + tile.h) / tilesheet.h
-    };
-
-    std::cout << "Min: {" << tile.x / tilesheet.w << ", " << tile.y / tilesheet.h  << "}" << std::endl;
-    std::cout << "Max: {" << (tile.x + tile.w) / tilesheet.w << ", " << (tile.y + tile.h) / tilesheet.h << "}" << std::endl;
-
-    mesh_data mesh(quad_vertices, quad_indices, tex_coord);
-    auto quad_mesh = renderer.create_mesh(mesh);
-
+    mesh_asset quad_mesh_asset = mesh_asset::get_primitive_quad();
+    auto quad_mesh = renderer.create_mesh(QUAD_VERTICES, QUAD_VERTICES_LENGTH, QUAD_INDICES, QUAD_INDICES_LENGTH);
+    
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while(glfwWindowShouldClose(window) == false)
     {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -111,7 +81,6 @@ int main(int argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        tilesheet_texture->bind();
         standard_shader->use();
 
         glm::mat4 projection = glm::mat4(1.0f);
@@ -122,21 +91,12 @@ int main(int argc, char** argv)
         view = glm::translate(view, camera_position);
         standard_shader->set_uniform_mat4("u_view", view);
 
-        std::vector<glm::mat4> models;
-        std::vector<float*> tex_coords;
-        glm::vec2 grid_offset = glm::vec2((TARGET_VIEWPORT_WIDTH - GRID_TILE) * 0.5f, (TARGET_VIEWPORT_HEIGHT - GRID_TILE) * 0.5f);
-        for (int y = 0; y < GRID_HEIGHT; y++)
-        {
-            for (int x = 0; x < GRID_WIDTH; x++)
-            {
-                glm::mat4 model = glm::mat4(1.0f);
-                glm::vec2 position = glm::vec2(x * GRID_TILE - grid_offset.x, y * GRID_TILE - grid_offset.y);
-                model = glm::translate(model, glm::vec3(position, 0.0f));  
-                model = glm::scale(model, glm::vec3(glm::vec2(GRID_TILE, GRID_TILE), 1.0f)); 
-                models.push_back(model);
-            }
-        }
-        quad_mesh->draw(models);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(GRID_TILE, GRID_TILE, 0.0f));
+        standard_shader->set_uniform_mat4("u_model", model);
+
+        quad_mesh->draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

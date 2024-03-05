@@ -1,0 +1,18 @@
+#include "include/mesh_asset.h"
+
+mesh_asset::mesh_asset()
+{
+}
+
+mesh_asset::mesh_asset(float* vertices, unsigned long vertices_length, unsigned int* indices, unsigned long indices_length) 
+: vertices(vertices), vertices_length(vertices_length), indices(indices), indices_length(indices_length)
+{
+}
+
+const mesh_asset mesh_asset::get_primitive_quad()
+{
+    mesh_asset quad_mesh;
+    quad_mesh.vertices = const_cast<float*>(QUAD_VERTICES);
+    quad_mesh.indices = const_cast<unsigned int*>(QUAD_INDICES);
+    return quad_mesh;
+}

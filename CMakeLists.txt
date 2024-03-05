@@ -10,13 +10,21 @@ project(pacman)
 set(DEPS_ROOT_DIR "${CMAKE_SOURCE_DIR}/deps")
 set(DEPS_INCLUDE_DIR "${DEPS_ROOT_DIR}/include")
 set(DEPS_LIBRARIES_DIR "${DEPS_ROOT_DIR}/lib/")
-####
 
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+add_executable(pacman 
+    src/mesh_asset.cpp 
+    src/sprite_asset.cpp 
+    src/gl_texture.cpp 
+    src/gl_renderer.cpp 
+    src/gl_shader.cpp 
+    src/gl_mesh.cpp 
+    main.cpp
+)
 
-add_executable(pacman src/sprite_asset.cpp src/gl_texture.cpp src/gl_renderer.cpp src/gl_shader.cpp src/gl_mesh.cpp main.cpp)
-
-target_include_directories(pacman PUBLIC BUILD_INTERFACE<${CMAKE_CURRENT_SOURCE_DIR}/src/include>)
+target_include_directories(pacman 
+    PUBLIC BUILD_INTERFACE<${CMAKE_CURRENT_SOURCE_DIR}/src/include> 
+    PRIVATE BUILD_INTERFACE<${CMAKE_CURRENT_SOURCE_DIR}/src>
+)
 
 target_include_directories(pacman PUBLIC ${DEPS_INCLUDE_DIR})
 target_link_directories(pacman PUBLIC ${DEPS_LIBRARIES_DIR})

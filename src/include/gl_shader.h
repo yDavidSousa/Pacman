@@ -1,9 +1,10 @@
 #ifndef PACMAN_GL_SHADER_H
 #define PACMAN_GL_SHADER_H
 
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+extern const char* STANDARD_VERT_SOURCE;
+extern const char* STANDARD_FRAG_SOURCE;
 
 class gl_shader
 {
@@ -12,7 +13,7 @@ class gl_shader
         ~gl_shader();
 
         void use();
-        void set_uniform_mat4(const char *name, glm::mat4 mat4);
+        void set_uniform_mat4(const char *name, glm::mat4 value);
     private:
         unsigned int m_program;
 };

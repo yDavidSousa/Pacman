@@ -2,9 +2,10 @@
 
 #include <GL/glew.h>
 
-gl_texture::gl_texture(int width, int height, int nr_channel, unsigned char* data) : m_width(width), m_height(height)
+gl_texture::gl_texture(int width, int height, int channels, unsigned char* data) : m_width(width), m_height(height)
 {
     glGenTextures(1, &m_tbo); 
+    glBindTexture(GL_TEXTURE_2D, m_tbo);
 
     // Wrapping
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
@@ -15,16 +16,23 @@ gl_texture::gl_texture(int width, int height, int nr_channel, unsigned char* dat
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     unsigned int format;
-    if (nr_channel == 1)
-        format = GL_RED;
-    else if (nr_channel == 3)
-        format = GL_RGB;
-    else if (nr_channel == 4)
-        format = GL_RGBA;
+    switch(channels)
+    {
+        case 1:
+            format = GL_RED;
+            break;
+        case 3:
+            format = GL_RGB;
+            break;
+        case 4:
+            format = GL_RGBA;
+            break;
+    }
 
-    glBindTexture(GL_TEXTURE_2D, m_tbo);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 gl_texture::~gl_texture()
