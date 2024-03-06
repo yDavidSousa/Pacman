@@ -1,8 +1,6 @@
 #ifndef PACMAN_SPRITE_ASSET_H
 #define PACMAN_SPRITE_ASSET_H
 
-#include "gl_texture.h"
-
 #include <glm/glm.hpp>
 
 struct sprite_asset

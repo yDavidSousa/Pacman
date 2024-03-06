@@ -33,7 +33,7 @@ float deltaTime = 0.0f, lastFrame = 0.0f;
 glm::vec3 camera_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void process_input(GLFWwindow *window);
 
 int main(int argc, char** argv)
 {
@@ -65,11 +65,11 @@ int main(int argc, char** argv)
     auto standard_shader = renderer.create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
     std::filesystem::path maze_tilesheet_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
-    auto tilesheet_texture = renderer.create_texture(maze_tilesheet_path.c_str());
+    auto tilesheet_texture = renderer.create_texture(maze_tilesheet_path.string().c_str());
 
     mesh_asset quad_mesh_asset = mesh_asset::get_primitive_quad();
     auto quad_mesh = renderer.create_mesh(QUAD_VERTICES, QUAD_VERTICES_LENGTH, QUAD_INDICES, QUAD_INDICES_LENGTH);
-    
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while(glfwWindowShouldClose(window) == false)
     {
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        processInput(window);
+        process_input(window);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -115,7 +115,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window)
+void process_input(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);

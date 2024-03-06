@@ -34,7 +34,7 @@ gl_shader::gl_shader(const char* vert_source, const char* frag_source)
     char infoLog[512];
 
     //Compile Vertex Shader
-    uint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vert_source, NULL);
     glCompileShader(vertex_shader);
     glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
@@ -45,7 +45,7 @@ gl_shader::gl_shader(const char* vert_source, const char* frag_source)
     }
 
     //Compile Fragment Shader
-    uint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &frag_source, NULL);
     glCompileShader(fragment_shader);
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);

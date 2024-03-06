@@ -14,7 +14,7 @@ class gl_texture
         int get_width() const;
         int get_height() const;
     private:
-        uint m_tbo;
+        unsigned int m_tbo;
         int m_width, m_height;
 };
 
