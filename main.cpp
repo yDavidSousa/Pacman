@@ -62,9 +62,23 @@ const int maze_data[] = {
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
 };
-
-//const int small_dots;
-//const int flashing_dots;
+const int dots_data[] = {
+	113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 127, 128, 129, 130, 131, 132,
+	133, 134, 135, 136, 137, 138, 141, 146, 152, 155, 161, 166, 174, 180, 183, 189, 197, 202,
+	208, 211, 217, 222, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 234, 235, 236, 237,
+	238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 253, 258, 261, 270, 273,
+	278, 281, 286, 289, 298, 301, 306, 309, 310, 311, 312, 313, 314, 317, 318, 319, 320, 323,
+	324, 325, 326, 329, 330, 331, 332, 333, 334, 342, 357, 370, 385, 398, 413, 426, 441, 454,
+	469, 482, 497, 510, 525, 538, 553, 566, 581, 594, 609, 622, 637, 645, 646, 647, 648, 649,
+	650, 651, 652, 653, 654, 655, 656, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669,
+	670, 673, 678, 684, 687, 693, 698, 701, 706, 712, 715, 721, 726, 730, 731, 734, 735, 736,
+	737, 738, 739, 740, 743, 744, 745, 746, 747, 748, 749, 752, 753, 759, 762, 765, 774, 777,
+	780, 787, 790, 793, 802, 805, 808, 813, 814, 815, 816, 817, 818, 821, 822, 823, 824, 827,
+	828, 829, 830, 833, 834, 835, 836, 837, 838, 841, 852, 855, 866, 869, 880, 883, 894, 897,
+	898, 899, 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915,
+	916, 917, 918, 919, 920, 921, 922
+};
+const int energizers_data[] = { 169, 194, 729, 754 };
 
 //GLOBAL
 float viewport_width = TARGET_VIEWPORT_WIDTH;
@@ -104,78 +118,154 @@ int main(int argc, char** argv)
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	gl_renderer renderer;
+	std::vector<gl_mesh*> dots_meshes;
+	std::vector<gl_mesh*> energizers_meshes;
+
 	auto standard_shader = renderer.create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
-	std::filesystem::path maze_tilesheet_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
-	auto tilesheet_texture = renderer.create_texture(maze_tilesheet_path.string().c_str());
+	std::filesystem::path tilesheet_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
+	auto tilesheet_texture = renderer.create_texture(tilesheet_path.string().c_str());
 	sprite_asset tilesheet_sprite = sprite_asset(0.0f, 0.0f, tilesheet_texture->get_width(), tilesheet_texture->get_height());
 	std::vector<sprite_asset> tiles = sprite_slice_count(tilesheet_sprite, 16, 9, { 1, 1 }, { 1, 1 });
 
+	// MAZE STATIC
 	float grid_offset_x = TARGET_VIEWPORT_WIDTH / 2.0f;
 	float grid_offset_y = TARGET_VIEWPORT_HEIGHT / 2.0f;
 
 	int tiles_count = sizeof(maze_data) / sizeof(float);
-	std::vector<float> grid_vertices;
+	std::vector<float> maze_vertices;
 	for (int i = 0; i < tiles_count; i++)
 	{
 		if(maze_data[i] == 12) continue;
 		int x = i % GRID_WIDTH;
 		int y = i / GRID_WIDTH;
 
-		grid_vertices.push_back(x * GRID_TILE - grid_offset_x);
-		grid_vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+		maze_vertices.push_back(x * GRID_TILE - grid_offset_x);
+		maze_vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
 
-		grid_vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		grid_vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+		maze_vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		maze_vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
 
-		grid_vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		grid_vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+		maze_vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		maze_vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
 
-		grid_vertices.push_back(x * GRID_TILE - grid_offset_x);
-		grid_vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+		maze_vertices.push_back(x * GRID_TILE - grid_offset_x);
+		maze_vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
 	}
 	
-	std::vector<unsigned int> grid_indices;
+	std::vector<unsigned int> maze_indices;
 	int index = 0;
 	for (int i = 0; i < tiles_count; i++)
 	{
 		if(maze_data[i] == 12) continue;
 
-		grid_indices.push_back(index * 4);
-		grid_indices.push_back(index * 4 + 1);
-		grid_indices.push_back(index * 4 + 2);
+		maze_indices.push_back(index * 4);
+		maze_indices.push_back(index * 4 + 1);
+		maze_indices.push_back(index * 4 + 2);
 
-		grid_indices.push_back(index * 4);
-		grid_indices.push_back(index * 4 + 3);
-		grid_indices.push_back(index * 4 + 2);
+		maze_indices.push_back(index * 4);
+		maze_indices.push_back(index * 4 + 3);
+		maze_indices.push_back(index * 4 + 2);
 		index++;
 	}
 
-	std::vector<float> grid_text_coords;
+	std::vector<float> maze_tex_coords;
 	for (int i = 0; i < tiles_count; i++)
 	{
 		if(maze_data[i] == 12) continue;
 
 		sprite_asset tile = tiles[maze_data[i] + 48];
-		grid_text_coords.push_back((tile.x) / tilesheet_sprite.w);
-		grid_text_coords.push_back((tile.y) / tilesheet_sprite.h);
+		maze_tex_coords.push_back((tile.x) / tilesheet_sprite.w);
+		maze_tex_coords.push_back((tile.y) / tilesheet_sprite.h);
 
-		grid_text_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
-		grid_text_coords.push_back((tile.y) / tilesheet_sprite.h);
+		maze_tex_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
+		maze_tex_coords.push_back((tile.y) / tilesheet_sprite.h);
 
-		grid_text_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
-		grid_text_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
+		maze_tex_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
+		maze_tex_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
 
-		grid_text_coords.push_back((tile.x) / tilesheet_sprite.w);
-		grid_text_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
+		maze_tex_coords.push_back((tile.x) / tilesheet_sprite.w);
+		maze_tex_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
+	}
+	auto maze_mesh = renderer.create_mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(), maze_indices.size(), maze_tex_coords.data(), maze_tex_coords.size());
+
+	// DOTS STATIC
+	sprite_asset dot_sprite = tiles[13];
+	std::vector<float> dot_tex_coords;
+	dot_tex_coords.push_back((dot_sprite.x) / tilesheet_sprite.w);
+	dot_tex_coords.push_back((dot_sprite.y) / tilesheet_sprite.h);
+
+	dot_tex_coords.push_back((dot_sprite.x + dot_sprite.w) / tilesheet_sprite.w);
+	dot_tex_coords.push_back((dot_sprite.y) / tilesheet_sprite.h);
+
+	dot_tex_coords.push_back((dot_sprite.x + dot_sprite.w) / tilesheet_sprite.w);
+	dot_tex_coords.push_back((dot_sprite.y + dot_sprite.h) / tilesheet_sprite.h);
+
+	dot_tex_coords.push_back((dot_sprite.x) / tilesheet_sprite.w);
+	dot_tex_coords.push_back((dot_sprite.y + dot_sprite.h) / tilesheet_sprite.h);
+
+	int dots_count = sizeof(dots_data) / sizeof(int);
+	for (int i = 0; i < dots_count; i++)
+	{
+		int x = dots_data[i] % GRID_WIDTH;
+		int y = dots_data[i] / GRID_WIDTH;
+
+		std::vector<float> vertices;
+		vertices.push_back(x * GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+
+		std::unique_ptr<gl_mesh> mesh = renderer.create_mesh(vertices.data(), vertices.size(), QUAD_INDICES, QUAD_INDICES_LENGTH, dot_tex_coords.data(), dot_tex_coords.size());
+		dots_meshes.push_back(mesh.release());
 	}
 
-	std::cout << "Vertices: " << grid_vertices.size() / 2.0f << std::endl;
-	std::cout << "Triangles: " << grid_indices.size() / 3.0f << std::endl;
-	std::cout << "UVs: " << grid_text_coords.size() / 2.0f << std::endl;
-	auto grid_mesh = renderer.create_mesh(grid_vertices.data(), grid_vertices.size(), grid_indices.data(), grid_indices.size(), grid_text_coords.data(), grid_text_coords.size());
+	// ENERGIZERS STATIC
+	sprite_asset energizer_sprite = tiles[15];
+	std::vector<float> energizer_tex_coords;
+	energizer_tex_coords.push_back((energizer_sprite.x) / tilesheet_sprite.w);
+	energizer_tex_coords.push_back((energizer_sprite.y) / tilesheet_sprite.h);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	energizer_tex_coords.push_back((energizer_sprite.x + energizer_sprite.w) / tilesheet_sprite.w);
+	energizer_tex_coords.push_back((energizer_sprite.y) / tilesheet_sprite.h);
+
+	energizer_tex_coords.push_back((energizer_sprite.x + energizer_sprite.w) / tilesheet_sprite.w);
+	energizer_tex_coords.push_back((energizer_sprite.y + energizer_sprite.h) / tilesheet_sprite.h);
+
+	energizer_tex_coords.push_back((energizer_sprite.x) / tilesheet_sprite.w);
+	energizer_tex_coords.push_back((energizer_sprite.y + energizer_sprite.h) / tilesheet_sprite.h);
+
+	int energizers_count = sizeof(energizers_data) / sizeof(int);
+	for (int i = 0; i < energizers_count; i++)
+	{
+		int x = energizers_data[i] % GRID_WIDTH;
+		int y = energizers_data[i] / GRID_WIDTH;
+
+		std::vector<float> vertices;
+		vertices.push_back(x * GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+
+		vertices.push_back(x * GRID_TILE - grid_offset_x);
+		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
+
+		std::unique_ptr<gl_mesh> mesh = renderer.create_mesh(vertices.data(), vertices.size(), QUAD_INDICES, QUAD_INDICES_LENGTH, energizer_tex_coords.data(), energizer_tex_coords.size());
+		energizers_meshes.push_back(mesh.release());
+	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	while (glfwWindowShouldClose(window) == false)
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
@@ -201,7 +291,15 @@ int main(int argc, char** argv)
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		standard_shader->set_uniform_mat4("u_model", model);
 
-		grid_mesh->draw();
+		maze_mesh->draw();
+		for (int i = 0; i < dots_meshes.size(); i++)
+		{
+			dots_meshes[i]->draw();
+		}
+		for (int i = 0; i < energizers_meshes.size(); i++)
+		{
+			energizers_meshes[i]->draw();
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

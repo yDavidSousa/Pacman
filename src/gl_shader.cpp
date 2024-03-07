@@ -22,8 +22,8 @@ const char* STANDARD_FRAG_SOURCE = "#version 330 core\n"
     "uniform sampler2D u_texture;\n"
     "void main()\n"
     "{\n"
-    //"   o_color = texture(u_texture, v_tex);\n"
-    "   o_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
+    "   o_color = texture(u_texture, v_tex);\n"
+    //"   o_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
     "}\0";
 
 gl_shader::gl_shader(const char* vert_source, const char* frag_source)
