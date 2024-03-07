@@ -6,16 +6,16 @@
 class gl_texture
 {
     public:
-        gl_texture(int width, int height, int channels, unsigned char* data);
+        gl_texture(float width, float height, int channels, unsigned char* data);
         ~gl_texture();
 
         void bind();
 
-        int get_width() const;
-        int get_height() const;
+        float get_width() const;
+        float get_height() const;
     private:
         unsigned int m_tbo;
-        int m_width, m_height;
+        float m_width, m_height;
 };
 
 #endif

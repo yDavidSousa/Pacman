@@ -25,9 +25,9 @@ std::unique_ptr<gl_shader> gl_renderer::create_shader(const char* vert_source, c
     return shader_instance;
 }
 
-std::unique_ptr<gl_mesh> gl_renderer::create_mesh(const float* vertices, const unsigned long vert_length, const unsigned int* indices, const unsigned long ind_length)
+std::unique_ptr<gl_mesh> gl_renderer::create_mesh(const float* vertices, const unsigned long vert_length, const unsigned int* indices, const unsigned long ind_length, const float* tex_coords, const unsigned long tex_coords_length)
 {
-    auto mesh_instance = std::make_unique<gl_mesh>(vertices, vert_length, indices, ind_length);
+    auto mesh_instance = std::make_unique<gl_mesh>(vertices, vert_length, indices, ind_length, tex_coords, tex_coords_length);
     return mesh_instance;
 }
 

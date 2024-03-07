@@ -6,7 +6,7 @@
 
 const char* STANDARD_VERT_SOURCE = "#version 330 core\n"
     "layout (location = 0) in vec2 a_vert;\n"
-    //"layout (location = 1) in vec2 a_tex;\n"
+    "layout (location = 1) in vec2 a_tex;\n"
     "out vec2 v_tex;\n"
     "uniform mat4 u_view;\n"
     "uniform mat4 u_projection;\n"
@@ -14,7 +14,7 @@ const char* STANDARD_VERT_SOURCE = "#version 330 core\n"
     "void main()\n"
     "{\n"
     "   gl_Position = u_projection * u_view * u_model * vec4(a_vert.xy, 0.0f, 1.0f);\n"
-    //"   v_tex = a_tex;\n"
+    "   v_tex = a_tex;\n"
     "}\0";
 const char* STANDARD_FRAG_SOURCE = "#version 330 core\n"
     "out vec4 o_color;\n"
