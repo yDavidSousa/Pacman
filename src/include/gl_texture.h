@@ -6,13 +6,13 @@
 class gl_texture
 {
     public:
-        gl_texture(float width, float height, int channels, unsigned char* data);
+        gl_texture(float width, float height, int channels, const unsigned char* data);
         ~gl_texture();
 
         void bind();
 
-        float get_width() const;
-        float get_height() const;
+        float get_width() const { return m_width; };
+        float get_height() const { return m_height; };
     private:
         unsigned int m_tbo;
         float m_width, m_height;

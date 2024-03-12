@@ -1,49 +1,42 @@
 #include "include/sprite_asset.h"
 
 sprite_asset::sprite_asset() : x(0), y(0), w(0), h(0)
-{}
-
-sprite_asset::sprite_asset(float x, float y, float w, float h) : x(x), y(y), w(w), h(h)
-{}
-
-std::vector<sprite_asset> sprite_slice_size(sprite_asset& sprite, float width, float height, glm::vec2 offset, glm::vec2 spacing)
 {
-    unsigned int column = static_cast<unsigned int>((sprite.w - (offset.x * 2) - (column - 1 * spacing.x)) / width);
-    unsigned int row = static_cast<unsigned int>((sprite.h - (offset.y * 2) - (row - 1 * spacing.y)) / height);
-
-    std::vector<sprite_asset> result;
-    float y = offset.y;
-    for (int r = 0; r < row; r++)
-    {
-        float x = offset.x;
-        for (int c = 0; c < column; c++)
-        {
-            sprite_asset ss(x, y, width, height);
-            result.push_back(ss);
-
-            x = (x + width) + spacing.x;
-        }
-
-        y = (y + height) + spacing.y;
-    }
-
-    return result;
 }
 
-std::vector<sprite_asset> sprite_slice_count(sprite_asset& sprite, unsigned int column, unsigned int row, glm::vec2 offset, glm::vec2 spacing)
+sprite_asset::sprite_asset(float x, float y, float w, float h) : x(x), y(y), w(w), h(h)
 {
-    float width = (sprite.w - (offset.x * 2) - (column - 1 * spacing.x)) / column;
-    float height = (sprite.h - (offset.y * 2) - (row - 1 * spacing.y)) / row;
+}
 
-    std::vector<sprite_asset> result;
+std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, float width, float height, glm::vec2 offset, glm::vec2 spacing)
+{
+    float tex_width = texture->get_width();
+    float tex_height = texture->get_height();
+
+    unsigned int column = static_cast<unsigned int>((tex_width - (offset.x * 2) - (column - 1 * spacing.x)) / width);
+    unsigned int row = static_cast<unsigned int>((tex_height - (offset.y * 2) - (row - 1 * spacing.y)) / height);
+
+    std::vector<sprite_asset> sprite_assets;
     float y = offset.y;
     for (int r = 0; r < row; r++)
     {
         float x = offset.x;
         for (int c = 0; c < column; c++)
         {
-            sprite_asset ss(x, y, width, height);
-            result.push_back(ss);
+            sprite_asset sprite_asset(x, y, width, height);
+
+            float left = x / tex_width;
+            float right = y / tex_height;
+            float bottom = (x + width) / tex_width;
+            float top = (y + height) / tex_height;
+
+            sprite_asset.tex_coords = new float[]{
+                    left, bottom,
+                    right, bottom,
+                    right, top,
+                    left, top
+            };
+            sprite_assets.push_back(sprite_asset);
 
             x = (x + width) + spacing.x;
         }
@@ -51,5 +44,44 @@ std::vector<sprite_asset> sprite_slice_count(sprite_asset& sprite, unsigned int 
         y = (y + height) + spacing.y;
     }
 
-    return result;
+    return sprite_assets;
+}
+
+std::vector<sprite_asset> sprite_slice_count(const gl_texture* texture, unsigned int column, unsigned int row, glm::vec2 offset, glm::vec2 spacing)
+{
+    float tex_width = texture->get_width();
+    float tex_height = texture->get_height();
+
+    float width = (tex_width - (offset.x * 2) - (column - 1 * spacing.x)) / column;
+    float height = (tex_height - (offset.y * 2) - (row - 1 * spacing.y)) / row;
+
+    std::vector<sprite_asset> sprite_assets;
+    float y = offset.y;
+    for (int r = 0; r < row; r++)
+    {
+        float x = offset.x;
+        for (int c = 0; c < column; c++)
+        {
+            sprite_asset sprite_asset(x, y, width, height);
+
+            float left = x / tex_width;
+            float right = (x + width) / tex_width;
+            float bottom = y / tex_height;
+            float top = (y + height) / tex_height;
+
+            sprite_asset.tex_coords = new float[]{
+                left, bottom,
+                right, bottom,
+                right, top,
+                left, top
+            };
+            sprite_assets.push_back(sprite_asset);
+
+            x = (x + width) + spacing.x;
+        }
+
+        y = (y + height) + spacing.y;
+    }
+
+    return sprite_assets;
 }

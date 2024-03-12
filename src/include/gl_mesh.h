@@ -6,7 +6,7 @@
 class gl_mesh
 {
     public:
-        gl_mesh(const float* vertices, const unsigned long vert_length, const unsigned int* indices, const unsigned long ind_length, const float* tex_coords, const unsigned long tex_coords_length);
+        gl_mesh(const float* vertices, unsigned int vert_length, const unsigned int* indices, unsigned int ind_length, const float* tex_coords, unsigned int tex_coords_length);
         ~gl_mesh();
 
         void draw();

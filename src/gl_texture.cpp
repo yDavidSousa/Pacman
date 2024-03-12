@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-gl_texture::gl_texture(float width, float height, int channels, unsigned char* data) : m_width(width), m_height(height)
+gl_texture::gl_texture(float width, float height, int channels, const unsigned char* data) : m_width(width), m_height(height)
 {
     glGenTextures(1, &m_tbo); 
     glBindTexture(GL_TEXTURE_2D, m_tbo);
@@ -20,6 +20,9 @@ gl_texture::gl_texture(float width, float height, int channels, unsigned char* d
     {
         case 1:
             format = GL_RED;
+            break;
+        case 2:
+            format = GL_RG;
             break;
         case 3:
             format = GL_RGB;
@@ -39,9 +42,6 @@ gl_texture::~gl_texture()
 {
     glDeleteTextures(1, &m_tbo);
 }
-
-float gl_texture::get_width() const { return m_width; }
-float gl_texture::get_height() const { return m_height; }
 
 void gl_texture::bind()
 {

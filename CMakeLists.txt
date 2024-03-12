@@ -11,13 +11,28 @@ set(DEPS_ROOT_DIR "${CMAKE_SOURCE_DIR}/deps")
 set(DEPS_INCLUDE_DIR "${DEPS_ROOT_DIR}/include")
 set(DEPS_LIBRARIES_DIR "${DEPS_ROOT_DIR}/lib/")
 
-add_executable(pacman 
-    src/mesh_asset.cpp 
-    src/sprite_asset.cpp 
-    src/gl_texture.cpp 
-    src/gl_renderer.cpp 
-    src/gl_shader.cpp 
-    src/gl_mesh.cpp 
+set(IMGUI_SRC
+        src/imgui/imgui_impl_opengl3.h
+        src/imgui/imgui_impl_opengl3.cpp
+        src/imgui/imgui_impl_opengl3_loader.h
+        src/imgui/imgui_impl_glfw.h
+        src/imgui/imgui_impl_glfw.cpp
+        src/imgui/imgui.h
+        src/imgui/imgui.cpp
+        src/imgui/imgui_draw.cpp
+        src/imgui/imgui_tables.cpp
+        src/imgui/imgui_widgets.cpp
+        src/imgui/imgui_demo.cpp
+)
+
+add_executable(pacman
+    ${IMGUI_SRC}
+    src/mesh_asset.cpp
+    src/sprite_asset.cpp
+    src/gl_texture.cpp
+    src/gl_renderer.cpp
+    src/gl_shader.cpp
+    src/gl_mesh.cpp
     main.cpp
 )
 

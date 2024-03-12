@@ -1,16 +1,15 @@
-#ifdef __APPLE__
-#define GL_SILENCE_DEPRECATION
-#endif
-
-#include "src/include/sprite_asset.h"
-#include "src/include/gl_renderer.h"
-
-#include <filesystem>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "src/imgui/imgui_impl_glfw.h"
+#include "src/imgui/imgui_impl_opengl3.h"
+
+#include "src/include/sprite_asset.h"
+#include "src/include/gl_renderer.h"
 
 //CONST
 const unsigned int PIXEL_SCALING = 3;
@@ -25,42 +24,42 @@ const unsigned int TARGET_VIEWPORT_WIDTH = PIXEL_WIDTH * PIXEL_SCALING;
 const unsigned int TARGET_VIEWPORT_HEIGHT = PIXEL_HEIGHT * PIXEL_SCALING;
 
 const int maze_data[] = {
-12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
-12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
-12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
-33,43,43,43,43,43,43,43,43,43,43,43,43,11,10,43,43,43,43,43,43,43,43,43,43,43,43,32,
-35,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,34,
-35,12,23,47,47,22,12,23,47,47,47,22,12,25,24,12,23,47,47,47,22,12,23,47,47,22,12,34,
-35,12,25,12,12,24,12,25,12,12,12,24,12,25,24,12,25,12,12,12,24,12,25,12,12,24,12,34,
-35,12,27,20,20,26,12,27,20,20,20,26,12,27,26,12,27,20,20,20,26,12,27,20,20,26,12,34,
-35,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,34,
-35,12,23,47,47,22,12,23,22,12,23,47,47,47,47,47,47,22,12,23,22,12,23,47,47,22,12,34,
-35,12,27,20,20,26,12,25,24,12,27,20,20,03,02,20,20,26,12,25,24,12,27,20,20,26,12,34,
-35,12,12,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,12,12,34,
-37,44,44,44,44,22,12,25,04,47,47,22,12,25,24,12,23,47,47,05,24,12,23,44,44,44,44,36,
-12,12,12,12,12,35,12,25,02,20,20,26,12,27,26,12,27,20,20,03,24,12,34,12,12,12,12,12,
-12,12,12,12,12,35,12,25,24,12,12,12,12,12,12,12,12,12,12,25,24,12,34,12,12,12,12,12,
-12,12,12,12,12,35,12,25,24,12,29,44,01,12,12,00,44,28,12,25,24,12,34,12,12,12,12,12,
-43,43,43,43,43,26,12,27,26,12,34,12,12,12,12,12,12,35,12,27,26,12,27,43,43,43,43,43,
-12,12,12,12,12,12,12,12,12,12,34,12,12,12,12,12,12,35,12,12,12,12,12,12,12,12,12,12,
-44,44,44,44,44,22,12,23,22,12,34,12,12,12,12,12,12,35,12,23,22,12,23,44,44,44,44,44,
-12,12,12,12,12,35,12,25,24,12,31,42,42,42,42,42,42,30,12,25,24,12,34,12,12,12,12,12,
-12,12,12,12,12,35,12,25,24,12,12,12,12,12,12,12,12,12,12,25,24,12,34,12,12,12,12,12,
-12,12,12,12,12,35,12,25,24,12,23,47,47,47,47,47,47,22,12,25,24,12,34,12,12,12,12,12,
-33,43,43,43,43,26,12,27,26,12,27,20,20,03,02,20,20,26,12,27,26,12,27,43,43,43,43,32,
-35,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,34,
-35,12,23,47,47,22,12,23,47,47,47,22,12,25,24,12,23,47,47,47,22,12,23,47,47,22,12,34,
-35,12,27,20,03,24,12,27,20,20,20,26,12,27,26,12,27,20,20,20,26,12,25,02,20,26,12,34,
-35,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,34,
-39,47,22,12,25,24,12,23,22,12,23,47,47,47,47,47,47,22,12,23,22,12,25,24,12,23,47,38,
-41,20,26,12,27,26,12,25,24,12,27,20,20,03,02,20,20,26,12,25,24,12,27,26,12,27,20,40,
-35,12,12,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,12,12,34,
-35,12,23,47,47,47,47,05,04,47,47,22,12,25,24,12,23,47,47,05,04,47,47,47,47,22,12,34,
-35,12,27,20,20,20,20,20,20,20,20,26,12,27,26,12,27,20,20,20,20,20,20,20,20,26,12,34,
-35,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,34,
-37,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,36,
-12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
-12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+    12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+    12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+    12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+    33,43,43,43,43,43,43,43,43,43,43,43,43,11,10,43,43,43,43,43,43,43,43,43,43,43,43,32,
+    35,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,34,
+    35,12,23,47,47,22,12,23,47,47,47,22,12,25,24,12,23,47,47,47,22,12,23,47,47,22,12,34,
+    35,12,25,12,12,24,12,25,12,12,12,24,12,25,24,12,25,12,12,12,24,12,25,12,12,24,12,34,
+    35,12,27,20,20,26,12,27,20,20,20,26,12,27,26,12,27,20,20,20,26,12,27,20,20,26,12,34,
+    35,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,34,
+    35,12,23,47,47,22,12,23,22,12,23,47,47,47,47,47,47,22,12,23,22,12,23,47,47,22,12,34,
+    35,12,27,20,20,26,12,25,24,12,27,20,20,03,02,20,20,26,12,25,24,12,27,20,20,26,12,34,
+    35,12,12,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,12,12,34,
+    37,44,44,44,44,22,12,25,04,47,47,22,12,25,24,12,23,47,47,05,24,12,23,44,44,44,44,36,
+    12,12,12,12,12,35,12,25,02,20,20,26,12,27,26,12,27,20,20,03,24,12,34,12,12,12,12,12,
+    12,12,12,12,12,35,12,25,24,12,12,12,12,12,12,12,12,12,12,25,24,12,34,12,12,12,12,12,
+    12,12,12,12,12,35,12,25,24,12,29,44,01,12,12,00,44,28,12,25,24,12,34,12,12,12,12,12,
+    43,43,43,43,43,26,12,27,26,12,34,12,12,12,12,12,12,35,12,27,26,12,27,43,43,43,43,43,
+    12,12,12,12,12,12,12,12,12,12,34,12,12,12,12,12,12,35,12,12,12,12,12,12,12,12,12,12,
+    44,44,44,44,44,22,12,23,22,12,34,12,12,12,12,12,12,35,12,23,22,12,23,44,44,44,44,44,
+    12,12,12,12,12,35,12,25,24,12,31,42,42,42,42,42,42,30,12,25,24,12,34,12,12,12,12,12,
+    12,12,12,12,12,35,12,25,24,12,12,12,12,12,12,12,12,12,12,25,24,12,34,12,12,12,12,12,
+    12,12,12,12,12,35,12,25,24,12,23,47,47,47,47,47,47,22,12,25,24,12,34,12,12,12,12,12,
+    33,43,43,43,43,26,12,27,26,12,27,20,20,03,02,20,20,26,12,27,26,12,27,43,43,43,43,32,
+    35,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,34,
+    35,12,23,47,47,22,12,23,47,47,47,22,12,25,24,12,23,47,47,47,22,12,23,47,47,22,12,34,
+    35,12,27,20,03,24,12,27,20,20,20,26,12,27,26,12,27,20,20,20,26,12,25,02,20,26,12,34,
+    35,12,12,12,25,24,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,25,24,12,12,12,34,
+    39,47,22,12,25,24,12,23,22,12,23,47,47,47,47,47,47,22,12,23,22,12,25,24,12,23,47,38,
+    41,20,26,12,27,26,12,25,24,12,27,20,20,03,02,20,20,26,12,25,24,12,27,26,12,27,20,40,
+    35,12,12,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,25,24,12,12,12,12,12,12,34,
+    35,12,23,47,47,47,47,05,04,47,47,22,12,25,24,12,23,47,47,05,04,47,47,47,47,22,12,34,
+    35,12,27,20,20,20,20,20,20,20,20,26,12,27,26,12,27,20,20,20,20,20,20,20,20,26,12,34,
+    35,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,34,
+    37,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,36,
+    12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+    12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
 };
 const int dots_data[] = {
 	113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 127, 128, 129, 130, 131, 132,
@@ -80,6 +79,15 @@ const int dots_data[] = {
 };
 const int energizers_data[] = { 169, 194, 729, 754 };
 
+struct actor
+{
+    glm::vec2 position;
+    glm::vec2 scale;
+    glm::vec2 direction;
+    float speed;
+    sprite_asset* sprite;
+};
+
 //GLOBAL
 float viewport_width = TARGET_VIEWPORT_WIDTH;
 float viewport_height = TARGET_VIEWPORT_HEIGHT;
@@ -93,6 +101,9 @@ void process_input(GLFWwindow* window);
 
 int main(int argc, char** argv)
 {
+    auto current_path = std::filesystem::current_path();
+    auto base_path = std::filesystem::path(argv[0]).remove_filename();
+
 	GLFWwindow* window;
 
 	if (glfwInit() == false)
@@ -117,16 +128,22 @@ int main(int argc, char** argv)
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+
 	gl_renderer renderer;
 	std::vector<gl_mesh*> dots_meshes;
 	std::vector<gl_mesh*> energizers_meshes;
+    bool* maze_collision = new bool[GRID_WIDTH * GRID_HEIGHT];
 
 	auto standard_shader = renderer.create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
-	std::filesystem::path tilesheet_path = std::filesystem::current_path().append("../data/grid_spritesheet.png");
-	auto tilesheet_texture = renderer.create_texture(tilesheet_path.string().c_str());
-	sprite_asset tilesheet_sprite = sprite_asset(0.0f, 0.0f, tilesheet_texture->get_width(), tilesheet_texture->get_height());
-	std::vector<sprite_asset> tiles = sprite_slice_count(tilesheet_sprite, 16, 9, { 1, 1 }, { 1, 1 });
+	auto tilesheet_texture = renderer.create_texture("/Users/davidsousa/Documents/Projects/pacman/data/tilesheet.png");
+	std::vector<sprite_asset> tiles = sprite_slice_count(tilesheet_texture.get(), 16, 9, { 1, 1 }, { 1, 1 });
+
+    auto spritesheet_texture = renderer.create_texture("/Users/davidsousa/Documents/Projects/pacman/data/spritesheet.png");
+    std::vector<sprite_asset> sprites = sprite_slice_count(spritesheet_texture.get(), 14, 14, { 0, 0 }, { 0, 0 });
 
 	// MAZE STATIC
 	float grid_offset_x = TARGET_VIEWPORT_WIDTH / 2.0f;
@@ -136,7 +153,10 @@ int main(int argc, char** argv)
 	std::vector<float> maze_vertices;
 	for (int i = 0; i < tiles_count; i++)
 	{
+        maze_collision[i] = false;
 		if(maze_data[i] == 12) continue;
+
+        maze_collision[i] = true;
 		int x = i % GRID_WIDTH;
 		int y = i / GRID_WIDTH;
 
@@ -175,97 +195,51 @@ int main(int argc, char** argv)
 		if(maze_data[i] == 12) continue;
 
 		sprite_asset tile = tiles[maze_data[i] + 48];
-		maze_tex_coords.push_back((tile.x) / tilesheet_sprite.w);
-		maze_tex_coords.push_back((tile.y) / tilesheet_sprite.h);
-
-		maze_tex_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
-		maze_tex_coords.push_back((tile.y) / tilesheet_sprite.h);
-
-		maze_tex_coords.push_back((tile.x + tile.w) / tilesheet_sprite.w);
-		maze_tex_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
-
-		maze_tex_coords.push_back((tile.x) / tilesheet_sprite.w);
-		maze_tex_coords.push_back((tile.y + tile.h) / tilesheet_sprite.h);
+        for (int j = 0; j < QUAD_TEX_COORDS_LENGTH; ++j)
+        {
+            maze_tex_coords.push_back(tile.tex_coords[j]);
+        }
 	}
 	auto maze_mesh = renderer.create_mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(), maze_indices.size(), maze_tex_coords.data(), maze_tex_coords.size());
 
 	// DOTS STATIC
-	sprite_asset dot_sprite = tiles[13];
-	std::vector<float> dot_tex_coords;
-	dot_tex_coords.push_back((dot_sprite.x) / tilesheet_sprite.w);
-	dot_tex_coords.push_back((dot_sprite.y) / tilesheet_sprite.h);
-
-	dot_tex_coords.push_back((dot_sprite.x + dot_sprite.w) / tilesheet_sprite.w);
-	dot_tex_coords.push_back((dot_sprite.y) / tilesheet_sprite.h);
-
-	dot_tex_coords.push_back((dot_sprite.x + dot_sprite.w) / tilesheet_sprite.w);
-	dot_tex_coords.push_back((dot_sprite.y + dot_sprite.h) / tilesheet_sprite.h);
-
-	dot_tex_coords.push_back((dot_sprite.x) / tilesheet_sprite.w);
-	dot_tex_coords.push_back((dot_sprite.y + dot_sprite.h) / tilesheet_sprite.h);
-
+    std::vector<actor> dots;
 	int dots_count = sizeof(dots_data) / sizeof(int);
 	for (int i = 0; i < dots_count; i++)
 	{
 		int x = dots_data[i] % GRID_WIDTH;
 		int y = dots_data[i] / GRID_WIDTH;
 
-		std::vector<float> vertices;
-		vertices.push_back(x * GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
-
-		std::unique_ptr<gl_mesh> mesh = renderer.create_mesh(vertices.data(), vertices.size(), QUAD_INDICES, QUAD_INDICES_LENGTH, dot_tex_coords.data(), dot_tex_coords.size());
-		dots_meshes.push_back(mesh.release());
+        dots.push_back({
+            .position = {x * GRID_TILE + GRID_TILE * 0.5f - grid_offset_x, y * GRID_TILE * -1.0f - GRID_TILE * 0.5f + grid_offset_y},
+            .scale = {GRID_TILE, GRID_TILE},
+            .sprite = &tiles[13 + 48]
+        });
 	}
 
 	// ENERGIZERS STATIC
-	sprite_asset energizer_sprite = tiles[15];
-	std::vector<float> energizer_tex_coords;
-	energizer_tex_coords.push_back((energizer_sprite.x) / tilesheet_sprite.w);
-	energizer_tex_coords.push_back((energizer_sprite.y) / tilesheet_sprite.h);
-
-	energizer_tex_coords.push_back((energizer_sprite.x + energizer_sprite.w) / tilesheet_sprite.w);
-	energizer_tex_coords.push_back((energizer_sprite.y) / tilesheet_sprite.h);
-
-	energizer_tex_coords.push_back((energizer_sprite.x + energizer_sprite.w) / tilesheet_sprite.w);
-	energizer_tex_coords.push_back((energizer_sprite.y + energizer_sprite.h) / tilesheet_sprite.h);
-
-	energizer_tex_coords.push_back((energizer_sprite.x) / tilesheet_sprite.w);
-	energizer_tex_coords.push_back((energizer_sprite.y + energizer_sprite.h) / tilesheet_sprite.h);
-
-	int energizers_count = sizeof(energizers_data) / sizeof(int);
+    std::vector<actor> energizers;
+    int energizers_count = sizeof(energizers_data) / sizeof(int);
 	for (int i = 0; i < energizers_count; i++)
 	{
 		int x = energizers_data[i] % GRID_WIDTH;
 		int y = energizers_data[i] / GRID_WIDTH;
 
-		std::vector<float> vertices;
-		vertices.push_back(x * GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f - GRID_TILE + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE + GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
-
-		vertices.push_back(x * GRID_TILE - grid_offset_x);
-		vertices.push_back(y * GRID_TILE * -1.0f + grid_offset_y);
-
-		std::unique_ptr<gl_mesh> mesh = renderer.create_mesh(vertices.data(), vertices.size(), QUAD_INDICES, QUAD_INDICES_LENGTH, energizer_tex_coords.data(), energizer_tex_coords.size());
-		energizers_meshes.push_back(mesh.release());
+        energizers.push_back({
+            .position = {x * GRID_TILE + GRID_TILE * 0.5f - grid_offset_x, y * GRID_TILE * -1.0f - GRID_TILE * 0.5f + grid_offset_y},
+            .scale = {GRID_TILE, GRID_TILE},
+            .sprite = &tiles[15 + 48]
+        });
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    actor player = {};
+    player.position = glm::vec2(0.0f, -204.0f);
+    player.scale = glm::vec2(16.0f * PIXEL_SCALING, 16.0f * PIXEL_SCALING);
+    player.direction = glm::vec2(1.0f, 0.0f);
+    player.speed = 16.0f * PIXEL_SCALING;
+    player.sprite = &tiles[15 + 48];
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	while (glfwWindowShouldClose(window) == false)
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
@@ -274,36 +248,55 @@ int main(int argc, char** argv)
 
 		process_input(window);
 
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		tilesheet_texture->bind();
 		standard_shader->use();
 
-		glm::mat4 projection = glm::mat4(1.0f);
+		auto projection = glm::mat4(1.0f);
 		projection = glm::ortho(-viewport_width * 0.5f, viewport_width * 0.5f, -viewport_height * 0.5f, viewport_height * 0.5f, -1.0f, 1.0f);
 		standard_shader->set_uniform_mat4("u_projection", projection);
 
-		glm::mat4 view = glm::mat4(1.0f);
+		auto view = glm::mat4(1.0f);
 		view = glm::translate(view, camera_position);
 		standard_shader->set_uniform_mat4("u_view", view);
 
-		glm::mat4 model = glm::mat4(1.0f);
+		auto model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		standard_shader->set_uniform_mat4("u_model", model);
 
+        tilesheet_texture->bind();
 		maze_mesh->draw();
-		for (int i = 0; i < dots_meshes.size(); i++)
-		{
-			dots_meshes[i]->draw();
-		}
-		for (int i = 0; i < energizers_meshes.size(); i++)
-		{
-			energizers_meshes[i]->draw();
-		}
 
-		glfwSwapBuffers(window);
+		for (int i = 0; i < dots.size(); i++)
+		{
+            renderer.push_quad(dots[i].position, dots[i].scale, dots[i].sprite->tex_coords);
+		}
+		for (int i = 0; i < energizers.size(); i++)
+		{
+            renderer.push_quad(energizers[i].position, energizers[i].scale, energizers[i].sprite->tex_coords);
+		}
+        renderer.push_quad(player.position, player.scale, player.sprite->tex_coords);
+        renderer.draw();
+
+        player.position += player.direction * player.speed * deltaTime;
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
 	glfwTerminate();
 

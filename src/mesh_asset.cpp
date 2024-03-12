@@ -13,6 +13,8 @@ const mesh_asset mesh_asset::get_primitive_quad()
 {
     mesh_asset quad_mesh;
     quad_mesh.vertices = const_cast<float*>(QUAD_VERTICES);
+    quad_mesh.vertices_length = QUAD_VERTICES_LENGTH;
     quad_mesh.indices = const_cast<unsigned int*>(QUAD_INDICES);
+    quad_mesh.indices_length = QUAD_INDICES_LENGTH;
     return quad_mesh;
 }

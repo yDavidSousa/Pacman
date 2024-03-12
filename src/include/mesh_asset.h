@@ -20,10 +20,10 @@ const unsigned int QUAD_INDICES[QUAD_INDICES_LENGTH] =
 const unsigned int QUAD_TEX_COORDS_LENGTH = QUAD_VERTICES_LENGTH;
 const float QUAD_TEX_COORDS[QUAD_TEX_COORDS_LENGTH] = 
 {
-    1.0f, 1.0f, // top right
-    1.0f, 0.0f, // bottom right
     0.0f, 0.0f, // bottom left
-    0.0f, 1.0f  // top left 
+    1.0f, 0.0f, // bottom right
+    1.0f, 1.0f, // top right
+    0.0f, 1.0f  // top left
 };
 
 struct mesh_asset
