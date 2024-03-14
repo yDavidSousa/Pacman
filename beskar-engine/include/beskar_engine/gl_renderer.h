@@ -1,5 +1,5 @@
-#ifndef PACMAN_GL_RENDERER_H
-#define PACMAN_GL_RENDERER_H
+#ifndef BESKAR_GL_RENDERER_H
+#define BESKAR_GL_RENDERER_H
 
 #include "gl_shader.h"
 #include "gl_mesh.h"
@@ -42,4 +42,4 @@ class gl_renderer
         batch_command* batch_cmd;
 };
 
-#endif
+#endif //BESKAR_GL_RENDERER_H

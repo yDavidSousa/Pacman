@@ -1,4 +1,4 @@
-#include "include/sprite_asset.h"
+#include "beskar_engine/sprite_asset.h"
 
 sprite_asset::sprite_asset() : x(0), y(0), w(0), h(0)
 {
@@ -10,11 +10,11 @@ sprite_asset::sprite_asset(float x, float y, float w, float h) : x(x), y(y), w(w
 
 std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, float width, float height, glm::vec2 offset, glm::vec2 spacing)
 {
-    float tex_width = texture->get_width();
-    float tex_height = texture->get_height();
+    int tex_width = texture->get_width();
+    int tex_height = texture->get_height();
 
-    unsigned int column = static_cast<unsigned int>((tex_width - (offset.x * 2) - (column - 1 * spacing.x)) / width);
-    unsigned int row = static_cast<unsigned int>((tex_height - (offset.y * 2) - (row - 1 * spacing.y)) / height);
+    int column = static_cast<int>((tex_width - (offset.x * 2) - (column - 1 * spacing.x)) / width);
+    int row = static_cast<int>((tex_height - (offset.y * 2) - (row - 1 * spacing.y)) / height);
 
     std::vector<sprite_asset> sprite_assets;
     float y = offset.y;
@@ -47,7 +47,7 @@ std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, float wid
     return sprite_assets;
 }
 
-std::vector<sprite_asset> sprite_slice_count(const gl_texture* texture, unsigned int column, unsigned int row, glm::vec2 offset, glm::vec2 spacing)
+std::vector<sprite_asset> sprite_slice_count(const gl_texture* texture, int column, int row, glm::vec2 offset, glm::vec2 spacing)
 {
     float tex_width = texture->get_width();
     float tex_height = texture->get_height();

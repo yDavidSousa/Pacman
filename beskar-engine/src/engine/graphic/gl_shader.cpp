@@ -1,8 +1,8 @@
-#include "include/gl_shader.h"
+#include "beskar_engine/gl_shader.h"
 
 #include <iostream>
-#include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
+#include "glm/gtc/type_ptr.hpp"
+#include "GL/glew.h"
 
 const char* STANDARD_VERT_SOURCE = "#version 330 core\n"
     "layout (location = 0) in vec2 a_vert;\n"

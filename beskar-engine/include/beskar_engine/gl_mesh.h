@@ -1,5 +1,5 @@
-#ifndef PACMAN_GL_MESH_H
-#define PACMAN_GL_MESH_H
+#ifndef BESKAR_GL_MESH_H
+#define BESKAR_GL_MESH_H
 
 #include "mesh_asset.h"
 
@@ -17,4 +17,4 @@ class gl_mesh
         unsigned int ibo, indices_length;
 };
 
-#endif
+#endif //BESKAR_GL_MESH_H

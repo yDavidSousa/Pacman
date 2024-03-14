@@ -1,7 +1,7 @@
-#ifndef PACMAN_GL_SHADER_H
-#define PACMAN_GL_SHADER_H
+#ifndef BESKAR_GL_SHADER_H
+#define BESKAR_GL_SHADER_H
 
-#include <glm/gtc/matrix_transform.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 
 extern const char* STANDARD_VERT_SOURCE;
 extern const char* STANDARD_FRAG_SOURCE;
@@ -18,4 +18,4 @@ class gl_shader
         unsigned int m_program;
 };
 
-#endif
+#endif //BESKAR_GL_SHADER_H

@@ -1,11 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "include/gl_renderer.h"
+#include "beskar_engine/gl_renderer.h"
 
-#include <stb_image.h>
-#include <GL/glew.h>
+#include "stb_image.h"
+#include "GL/glew.h"
 
-batch_command::batch_command(int capacity) : vertex_capacity(capacity), vertex_count(0)
+batch_command::batch_command(int capacity) : vertex_capacity(capacity), vertex_count(0), indices_count(0)
 {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -22,13 +22,13 @@ batch_command::batch_command(int capacity) : vertex_capacity(capacity), vertex_c
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertex_capacity * 6 * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (vertex_capacity * 2 * sizeof(unsigned int)), nullptr, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
 
     vertices = static_cast<vertex_data *>(malloc(vertex_capacity * sizeof(vertex_data)));
-    indices = static_cast<unsigned int *>(malloc(vertex_capacity * 6 * sizeof(unsigned int)));
+    indices = static_cast<unsigned int *>(malloc(vertex_capacity * 2 * sizeof(unsigned int)));
 }
 
 gl_renderer::gl_renderer()

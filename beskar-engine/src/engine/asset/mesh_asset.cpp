@@ -1,4 +1,4 @@
-#include "include/mesh_asset.h"
+#include "beskar_engine/mesh_asset.h"
 
 mesh_asset::mesh_asset()
 {

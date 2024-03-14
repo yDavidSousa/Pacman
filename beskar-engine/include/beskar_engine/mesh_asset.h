@@ -1,5 +1,5 @@
-#ifndef PACMAN_MESH_ASSET_H
-#define PACMAN_MESH_ASSET_H
+#ifndef BESKAR_MESH_ASSET_H
+#define BESKAR_MESH_ASSET_H
 
 const unsigned int QUAD_VERTICES_LENGTH = 8;
 const float QUAD_VERTICES[QUAD_VERTICES_LENGTH] = 
@@ -39,4 +39,4 @@ struct mesh_asset
     static const mesh_asset get_primitive_quad();
 };
 
-#endif
+#endif //BESKAR_MESH_ASSET_H
