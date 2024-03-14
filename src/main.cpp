@@ -1,4 +1,5 @@
 #include <vector>
+#include <filesystem>
 #include <beskar_engine/sprite_asset.h>
 #include <beskar_engine/gl_renderer.h>
 #include <beskar_engine/application.h>
@@ -92,16 +93,14 @@ std::vector<sprite_asset> sprites;
 
 void application::initialize()
 {
-    //WINDOWS: F:/Projects/Personal/pacman/data/tilesheet.png
-    //MAC: /Users/davidsousa/Documents/Projects/pacman/data
-
     renderer = new gl_renderer();
     standard_shader = renderer->create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
-    tilesheet_texture = renderer->create_texture("/Users/davidsousa/Documents/Projects/pacman/data/tilesheet.png");
+    tilesheet_texture = renderer->create_texture((data_path /  "tilesheet.png").string().c_str());
     tiles = sprite_slice_count(tilesheet_texture.get(), 16, 9, { 1, 1 }, { 1, 1 });
 
-    spritesheet_texture = renderer->create_texture("/Users/davidsousa/Documents/Projects/pacman/data/spritesheet.png");
+
+    spritesheet_texture = renderer->create_texture((data_path /  "spritesheet.png").string().c_str());
     sprites = sprite_slice_count(spritesheet_texture.get(), 8, 6, { 0, 0 }, { 0, 0 });
 
     // MAZE STATIC
@@ -232,7 +231,7 @@ void application::update(float delta_time)
 
 int main(int argc, char** argv)
 {
-    auto pacman_app = new application();
+    auto pacman_app = new application(argv[0]);
     pacman_app->run(TARGET_VIEWPORT_WIDTH, TARGET_VIEWPORT_HEIGHT);
     delete pacman_app;
 	return 0;
