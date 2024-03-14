@@ -1,0 +1,3 @@
+[submodule "beskar-engine"]
+	path = beskar-engine
+	url = https://github.com/yDavidSousa/beskar-engine.git
