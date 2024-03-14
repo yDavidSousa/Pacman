@@ -1,7 +1,6 @@
 #include "beskar_engine/gl_mesh.h"
 
 #include "GL/glew.h"
-#include <iostream>
 
 gl_mesh::gl_mesh(const float* vertices, unsigned int vert_length, const unsigned int* indices, unsigned int ind_length, const float* tex_coords, unsigned int tex_coords_length)
     : vertices_length(vert_length), indices_length(ind_length), tex_coords_length(tex_coords_length)

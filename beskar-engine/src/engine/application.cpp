@@ -29,7 +29,6 @@ void application::run(int width, int height)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
-    std::cout << "I'm apple machine" << std::endl;
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
@@ -41,6 +40,8 @@ void application::run(int width, int height)
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    application::initialize();
 
     float delta_time = 0.0f, last_frame = 0.0f;
 

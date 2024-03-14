@@ -79,7 +79,7 @@ struct actor
     sprite_asset* sprite;
 };
 
-gl_renderer renderer;
+gl_renderer* renderer;
 std::unique_ptr<gl_shader> standard_shader;
 std::unique_ptr<gl_texture> tilesheet_texture;
 std::unique_ptr<gl_texture> spritesheet_texture;
@@ -87,20 +87,22 @@ actor player = {};
 std::vector<actor> dots;
 std::vector<actor> energizers;
 std::unique_ptr<gl_mesh> maze_mesh;
+std::vector<sprite_asset> tiles;
+std::vector<sprite_asset> sprites;
 
 void application::initialize()
 {
-    std::vector<gl_mesh*> dots_meshes;
-    std::vector<gl_mesh*> energizers_meshes;
-    bool* maze_collision = new bool[GRID_WIDTH * GRID_HEIGHT];
+    //WINDOWS: F:/Projects/Personal/pacman/data/tilesheet.png
+    //MAC: /Users/davidsousa/Documents/Projects/pacman/data
 
-    standard_shader = renderer.create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
+    renderer = new gl_renderer();
+    standard_shader = renderer->create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
 
-    tilesheet_texture = renderer.create_texture("F:/Projects/Personal/pacman/data/tilesheet.png");
-    std::vector<sprite_asset> tiles = sprite_slice_count(tilesheet_texture.get(), 16, 9, { 1, 1 }, { 1, 1 });
+    tilesheet_texture = renderer->create_texture("/Users/davidsousa/Documents/Projects/pacman/data/tilesheet.png");
+    tiles = sprite_slice_count(tilesheet_texture.get(), 16, 9, { 1, 1 }, { 1, 1 });
 
-    spritesheet_texture = renderer.create_texture("F:/Projects/Personal/pacman/data/spritesheet.png");
-    std::vector<sprite_asset> sprites = sprite_slice_count(spritesheet_texture.get(), 8, 6, { 0, 0 }, { 0, 0 });
+    spritesheet_texture = renderer->create_texture("/Users/davidsousa/Documents/Projects/pacman/data/spritesheet.png");
+    sprites = sprite_slice_count(spritesheet_texture.get(), 8, 6, { 0, 0 }, { 0, 0 });
 
     // MAZE STATIC
     float grid_offset_x = TARGET_VIEWPORT_WIDTH / 2.0f;
@@ -110,10 +112,8 @@ void application::initialize()
     std::vector<float> maze_vertices;
     for (int i = 0; i < tiles_count; i++)
     {
-        maze_collision[i] = false;
         if(maze_data[i] == 12) continue;
 
-        maze_collision[i] = true;
         int x = i % GRID_WIDTH;
         int y = i / GRID_WIDTH;
 
@@ -157,7 +157,7 @@ void application::initialize()
             maze_tex_coords.push_back(tile.tex_coords[j]);
         }
     }
-    maze_mesh = renderer.create_mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(),
+    maze_mesh = renderer->create_mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(),
                                      maze_indices.size(), maze_tex_coords.data(), maze_tex_coords.size());
 
     // DOTS STATIC
@@ -192,7 +192,7 @@ void application::initialize()
     player.scale = glm::vec2(16.0f * PIXEL_SCALING, 16.0f * PIXEL_SCALING);
     player.direction = glm::vec2(1.0f, 0.0f);
     player.speed = 16.0f * PIXEL_SCALING;
-    player.sprite = &sprites[0];
+    player.sprite = &tiles[15];
 }
 
 void application::update(float delta_time)
@@ -200,29 +200,32 @@ void application::update(float delta_time)
     standard_shader->use();
 
     auto projection = glm::mat4(1.0f);
-    projection = glm::ortho(-TARGET_VIEWPORT_WIDTH * 0.5f, TARGET_VIEWPORT_WIDTH * 0.5f, -TARGET_VIEWPORT_HEIGHT * 0.5f, TARGET_VIEWPORT_HEIGHT * 0.5f, -1.0f, 1.0f);
+    float viewport_width = static_cast<float>(TARGET_VIEWPORT_WIDTH);
+    float viewport_height = static_cast<float>(TARGET_VIEWPORT_HEIGHT);
+    projection = glm::ortho(-viewport_width * 0.5f, viewport_width * 0.5f, -viewport_height * 0.5f, viewport_height * 0.5f, -1.0f, 1.0f);
     standard_shader->set_uniform_mat4("u_projection", projection);
 
     auto view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
     standard_shader->set_uniform_mat4("u_view", view);
 
     auto model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     standard_shader->set_uniform_mat4("u_model", model);
 
-    spritesheet_texture->bind();
+    tilesheet_texture->bind();
     maze_mesh->draw();
 
     for (int i = 0; i < dots.size(); i++)
     {
-        renderer.push_quad(dots[i].position, dots[i].scale, dots[i].sprite->tex_coords);
+        renderer->push_quad(dots[i].position, dots[i].scale, dots[i].sprite->tex_coords);
     }
     for (int i = 0; i < energizers.size(); i++)
     {
-        renderer.push_quad(energizers[i].position, energizers[i].scale, energizers[i].sprite->tex_coords);
+        renderer->push_quad(energizers[i].position, energizers[i].scale, energizers[i].sprite->tex_coords);
     }
-    renderer.push_quad(player.position, player.scale, player.sprite->tex_coords);
-    renderer.draw();
+    renderer->push_quad(player.position, player.scale, player.sprite->tex_coords);
+    renderer->draw();
 
     player.position += player.direction * player.speed * delta_time;
 }
@@ -230,7 +233,6 @@ void application::update(float delta_time)
 int main(int argc, char** argv)
 {
     auto pacman_app = new application();
-
     pacman_app->run(TARGET_VIEWPORT_WIDTH, TARGET_VIEWPORT_HEIGHT);
     delete pacman_app;
 	return 0;

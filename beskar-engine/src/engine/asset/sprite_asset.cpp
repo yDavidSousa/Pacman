@@ -4,11 +4,11 @@ sprite_asset::sprite_asset() : x(0), y(0), w(0), h(0)
 {
 }
 
-sprite_asset::sprite_asset(float x, float y, float w, float h) : x(x), y(y), w(w), h(h)
+sprite_asset::sprite_asset(float x, float y, int w, int h) : x(x), y(y), w(w), h(h)
 {
 }
 
-std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, float width, float height, glm::vec2 offset, glm::vec2 spacing)
+std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, int width, int height, glm::vec2 offset, glm::vec2 spacing)
 {
     int tex_width = texture->get_width();
     int tex_height = texture->get_height();
@@ -49,8 +49,8 @@ std::vector<sprite_asset> sprite_slice_size(const gl_texture* texture, float wid
 
 std::vector<sprite_asset> sprite_slice_count(const gl_texture* texture, int column, int row, glm::vec2 offset, glm::vec2 spacing)
 {
-    float tex_width = texture->get_width();
-    float tex_height = texture->get_height();
+    int tex_width = texture->get_width();
+    int tex_height = texture->get_height();
 
     float width = (tex_width - (offset.x * 2) - (column - 1 * spacing.x)) / column;
     float height = (tex_height - (offset.y * 2) - (row - 1 * spacing.y)) / row;
