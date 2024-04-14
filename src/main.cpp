@@ -245,10 +245,7 @@ void application::gui()
     }
 }
 
-int main(int argc, char **argv)
+application* beskar_main(int argc, char **argv)
 {
-    auto pacman_app = new application(argv[0]);
-    pacman_app->run(TARGET_VIEWPORT_WIDTH, TARGET_VIEWPORT_HEIGHT);
-    delete pacman_app;
-    return 0;
+    return new application(argv[0], TARGET_VIEWPORT_WIDTH, TARGET_VIEWPORT_HEIGHT);
 }

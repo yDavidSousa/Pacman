@@ -6,6 +6,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(pacman)
 
+add_compile_definitions(BESKAR_EDITOR)
+
 add_subdirectory(beskar)
 add_executable(pacman)
 target_sources(pacman PRIVATE src/main.cpp) # no need to add headers here, only sources are required
