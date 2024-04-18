@@ -1,8 +1,8 @@
-#include <vector>
-#include <filesystem>
-#include <beskar_engine/sprite_asset.h>
-#include <beskar_engine/gl_renderer.h>
+#if BESKAR_EDITOR
+#include "../beskar/src/editor/imgui/imgui.h"
+#endif
 #include <beskar_engine/application.h>
+#include <beskar_engine/mesh.h>
 
 const unsigned int PIXEL_SCALING = 3;
 const unsigned int PIXEL_WIDTH = 224;
@@ -79,32 +79,18 @@ struct actor
     glm::vec2 scale;
     glm::vec2 direction;
     float speed;
-    sprite_asset *sprite;
 };
 
-gl_renderer *renderer;
-std::unique_ptr<gl_shader> standard_shader;
-std::unique_ptr<gl_texture> tilesheet_texture;
-std::unique_ptr<gl_texture> spritesheet_texture;
+unsigned int tilesheet_texture;
+unsigned int standard_shader;
+
 actor player = {};
-std::vector<actor> dots;
-std::vector<actor> energizers;
-std::unique_ptr<gl_mesh> maze_mesh;
-std::vector<sprite_asset> tiles;
-std::vector<sprite_asset> sprites;
+mesh* maze_mesh;
 
 void application::initialize()
 {
-
-    //MODULE
-    renderer = new gl_renderer();
-
-    //RESOURCE
-    standard_shader = renderer->create_shader(STANDARD_VERT_SOURCE, STANDARD_FRAG_SOURCE);
-    tilesheet_texture = renderer->create_texture((data_path / "textures/tilesheet.png").string().c_str());
-    tiles = sprite_slice_count(tilesheet_texture.get(), 16, 9, {1, 1}, {1, 1});
-    spritesheet_texture = renderer->create_texture((data_path / "textures/spritesheet.png").string().c_str());
-    sprites = sprite_slice_count(spritesheet_texture.get(), 8, 6, {0, 0}, {0, 0});
+    tilesheet_texture = resource_system->load_texture("textures\\tilesheet.png");
+    standard_shader = resource_system->load_shader("shaders\\standard.glsl");
 
     // MAZE STATIC
     float grid_offset_x = TARGET_VIEWPORT_WIDTH / 2.0f;
@@ -153,96 +139,73 @@ void application::initialize()
     {
         if (maze_data[i] == 12) continue;
 
-        sprite_asset tile = tiles[maze_data[i] + 48];
+        sprite_metadata tile = resource_system->lookup_sprite("textures\\tilesheet.png", maze_data[i] + 48);
+        texture* texture_ptr = resource_system->lookup_texture(tilesheet_texture);
+
+        int texture_width = texture_ptr->get_width();
+        int texture_height = texture_ptr->get_height();
+        float left = tile.x / texture_width;
+        float right = (tile.x + tile.w) / texture_width;
+        float bottom = tile.y / texture_height;
+        float top = (tile.y + tile.h) / texture_height;
+        float* tex_coords = new float[]{
+                left, bottom,
+                right, bottom,
+                right, top,
+                left, top
+        };
+
         for (int j = 0; j < QUAD_TEX_COORDS_LENGTH; ++j)
         {
-            maze_tex_coords.push_back(tile.tex_coords[j]);
+            maze_tex_coords.push_back(tex_coords[j]);
         }
     }
-    maze_mesh = renderer->create_mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(), maze_indices.size(), maze_tex_coords.data(), maze_tex_coords.size());
-
-    // DOTS STATIC
-    int dots_count = sizeof(dots_data) / sizeof(int);
-    for (int i = 0; i < dots_count; i++)
-    {
-        float x = dots_data[i] % GRID_WIDTH;
-        float y = dots_data[i] / GRID_WIDTH;
-
-        actor dot = {};
-        dot.position = {x * GRID_TILE + GRID_TILE * 0.5f - grid_offset_x, y * GRID_TILE * -1.0f - GRID_TILE * 0.5f + grid_offset_y};
-        dot.scale = {GRID_TILE, GRID_TILE};
-        dot.sprite = &tiles[13 + 48];
-        dots.push_back(dot);
-    }
-
-    // ENERGIZERS STATIC
-    int energizers_count = sizeof(energizers_data) / sizeof(int);
-    for (int i = 0; i < energizers_count; i++)
-    {
-        float x = energizers_data[i] % GRID_WIDTH;
-        float y = energizers_data[i] / GRID_WIDTH;
-
-        actor energizer = {};
-        energizer.position = {x * GRID_TILE + GRID_TILE * 0.5f - grid_offset_x, y * GRID_TILE * -1.0f - GRID_TILE * 0.5f + grid_offset_y};
-        energizer.scale = {GRID_TILE, GRID_TILE};
-        energizer.sprite = &tiles[15 + 48];
-        energizers.push_back(energizer);
-    }
-
-    // PLAYER DYNAMIC
-    player.position = glm::vec2(0.0f, -204.0f);
-    player.scale = glm::vec2(16.0f * PIXEL_SCALING, 16.0f * PIXEL_SCALING);
-    player.direction = glm::vec2(1.0f, 0.0f);
-    player.speed = 16.0f * PIXEL_SCALING;
-    player.sprite = &tiles[15];
+    maze_mesh = new mesh(maze_vertices.data(), maze_vertices.size(), maze_indices.data(), maze_indices.size(), maze_tex_coords.data(), maze_tex_coords.size());
 }
 
 void application::update(float delta_time)
 {
-    standard_shader->use();
+    shader* standard_shader_ptr = resource_system->lookup_shader(standard_shader);
+    standard_shader_ptr->use();
+
+    float white_color[4] = {1, 1, 1, 1};
+    standard_shader_ptr->set_uniform_4fv("u_color", white_color);
 
     auto projection = glm::mat4(1.0f);
     float viewport_width = static_cast<float>(TARGET_VIEWPORT_WIDTH);
     float viewport_height = static_cast<float>(TARGET_VIEWPORT_HEIGHT);
     projection = glm::ortho(-viewport_width * 0.5f, viewport_width * 0.5f, -viewport_height * 0.5f, viewport_height * 0.5f, -1.0f, 1.0f);
-    standard_shader->set_uniform_mat4("u_projection", projection);
+    standard_shader_ptr->set_uniform_mat4("u_projection", projection);
 
     auto view = glm::mat4(1.0f);
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-    standard_shader->set_uniform_mat4("u_view", view);
+    standard_shader_ptr->set_uniform_mat4("u_view", view);
 
     auto model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    standard_shader->set_uniform_mat4("u_model", model);
+    standard_shader_ptr->set_uniform_mat4("u_model", model);
 
-    tilesheet_texture->bind();
+    texture* tilesheet_texture_ptr = resource_system->lookup_texture(tilesheet_texture);
+    tilesheet_texture_ptr->bind();
+
     maze_mesh->draw();
-
-    for (int i = 0; i < dots.size(); i++)
-    {
-        renderer->push_quad(dots[i].position, dots[i].scale, dots[i].sprite->tex_coords);
-    }
-    for (int i = 0; i < energizers.size(); i++)
-    {
-        renderer->push_quad(energizers[i].position, energizers[i].scale, energizers[i].sprite->tex_coords);
-    }
-    renderer->push_quad(player.position, player.scale, player.sprite->tex_coords);
-    renderer->draw();
-
-    player.position += player.direction * player.speed * delta_time;
+    renderer_system->draw();
 }
 
 void application::gui()
 {
+#if BESKAR_EDITOR
     if(ImGui::BeginMainMenuBar())
     {
-        if(ImGui::BeginMenu("Beskar"))
+        if(ImGui::BeginMenu("Window"))
         {
+            ImGui::MenuItem("Game Debug");
             ImGui::EndMenu();
         }
 
         ImGui::EndMainMenuBar();
     }
+#endif
 }
 
 application* beskar_main(int argc, char **argv)

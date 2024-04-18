@@ -1,0 +1,249 @@
+guid: 5317493847884947426
+timeCreated: 1710251769
+fileName: spritesheet
+filePath: F:\Projects\Personal\pacman\data\textures\spritesheet.png
+textureImporter: 
+	wrapMode: 0
+	filterMode: 0
+	pixelFormat: 4
+	spriteSheet: 48
+		spritesheet_0
+			x: 0
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_1
+			x: 15
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_2
+			x: 30
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_3
+			x: 45
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_4
+			x: 60
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_5
+			x: 75
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_6
+			x: 90
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_7
+			x: 105
+			y: 0
+			width: 15
+			height: 15
+		spritesheet_8
+			x: 0
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_9
+			x: 15
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_10
+			x: 30
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_11
+			x: 45
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_12
+			x: 60
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_13
+			x: 75
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_14
+			x: 90
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_15
+			x: 105
+			y: 15
+			width: 15
+			height: 15
+		spritesheet_16
+			x: 0
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_17
+			x: 15
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_18
+			x: 30
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_19
+			x: 45
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_20
+			x: 60
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_21
+			x: 75
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_22
+			x: 90
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_23
+			x: 105
+			y: 30
+			width: 15
+			height: 15
+		spritesheet_24
+			x: 0
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_25
+			x: 15
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_26
+			x: 30
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_27
+			x: 45
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_28
+			x: 60
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_29
+			x: 75
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_30
+			x: 90
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_31
+			x: 105
+			y: 45
+			width: 15
+			height: 15
+		spritesheet_32
+			x: 0
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_33
+			x: 15
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_34
+			x: 30
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_35
+			x: 45
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_36
+			x: 60
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_37
+			x: 75
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_38
+			x: 90
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_39
+			x: 105
+			y: 60
+			width: 15
+			height: 15
+		spritesheet_40
+			x: 0
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_41
+			x: 15
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_42
+			x: 30
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_43
+			x: 45
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_44
+			x: 60
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_45
+			x: 75
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_46
+			x: 90
+			y: 75
+			width: 15
+			height: 15
+		spritesheet_47
+			x: 105
+			y: 75
+			width: 15
+			height: 15

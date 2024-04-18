@@ -1,0 +1,729 @@
+guid: 7375794216804535239
+timeCreated: 1710251769
+fileName: tilesheet
+filePath: F:\Projects\Personal\pacman\data\textures\tilesheet.png
+textureImporter: 
+	wrapMode: 0
+	filterMode: 0
+	pixelFormat: 4
+	spriteSheet: 144
+		tilesheet_0
+			x: 1
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_1
+			x: 10
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_2
+			x: 19
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_3
+			x: 28
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_4
+			x: 37
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_5
+			x: 46
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_6
+			x: 55
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_7
+			x: 64
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_8
+			x: 73
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_9
+			x: 82
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_10
+			x: 91
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_11
+			x: 100
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_12
+			x: 109
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_13
+			x: 118
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_14
+			x: 127
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_15
+			x: 136
+			y: 1
+			width: 8
+			height: 8
+		tilesheet_16
+			x: 1
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_17
+			x: 10
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_18
+			x: 19
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_19
+			x: 28
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_20
+			x: 37
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_21
+			x: 46
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_22
+			x: 55
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_23
+			x: 64
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_24
+			x: 73
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_25
+			x: 82
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_26
+			x: 91
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_27
+			x: 100
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_28
+			x: 109
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_29
+			x: 118
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_30
+			x: 127
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_31
+			x: 136
+			y: 10
+			width: 8
+			height: 8
+		tilesheet_32
+			x: 1
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_33
+			x: 10
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_34
+			x: 19
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_35
+			x: 28
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_36
+			x: 37
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_37
+			x: 46
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_38
+			x: 55
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_39
+			x: 64
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_40
+			x: 73
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_41
+			x: 82
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_42
+			x: 91
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_43
+			x: 100
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_44
+			x: 109
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_45
+			x: 118
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_46
+			x: 127
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_47
+			x: 136
+			y: 19
+			width: 8
+			height: 8
+		tilesheet_48
+			x: 1
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_49
+			x: 10
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_50
+			x: 19
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_51
+			x: 28
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_52
+			x: 37
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_53
+			x: 46
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_54
+			x: 55
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_55
+			x: 64
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_56
+			x: 73
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_57
+			x: 82
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_58
+			x: 91
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_59
+			x: 100
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_60
+			x: 109
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_61
+			x: 118
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_62
+			x: 127
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_63
+			x: 136
+			y: 28
+			width: 8
+			height: 8
+		tilesheet_64
+			x: 1
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_65
+			x: 10
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_66
+			x: 19
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_67
+			x: 28
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_68
+			x: 37
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_69
+			x: 46
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_70
+			x: 55
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_71
+			x: 64
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_72
+			x: 73
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_73
+			x: 82
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_74
+			x: 91
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_75
+			x: 100
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_76
+			x: 109
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_77
+			x: 118
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_78
+			x: 127
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_79
+			x: 136
+			y: 37
+			width: 8
+			height: 8
+		tilesheet_80
+			x: 1
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_81
+			x: 10
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_82
+			x: 19
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_83
+			x: 28
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_84
+			x: 37
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_85
+			x: 46
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_86
+			x: 55
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_87
+			x: 64
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_88
+			x: 73
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_89
+			x: 82
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_90
+			x: 91
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_91
+			x: 100
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_92
+			x: 109
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_93
+			x: 118
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_94
+			x: 127
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_95
+			x: 136
+			y: 46
+			width: 8
+			height: 8
+		tilesheet_96
+			x: 1
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_97
+			x: 10
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_98
+			x: 19
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_99
+			x: 28
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_100
+			x: 37
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_101
+			x: 46
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_102
+			x: 55
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_103
+			x: 64
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_104
+			x: 73
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_105
+			x: 82
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_106
+			x: 91
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_107
+			x: 100
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_108
+			x: 109
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_109
+			x: 118
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_110
+			x: 127
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_111
+			x: 136
+			y: 55
+			width: 8
+			height: 8
+		tilesheet_112
+			x: 1
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_113
+			x: 10
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_114
+			x: 19
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_115
+			x: 28
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_116
+			x: 37
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_117
+			x: 46
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_118
+			x: 55
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_119
+			x: 64
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_120
+			x: 73
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_121
+			x: 82
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_122
+			x: 91
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_123
+			x: 100
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_124
+			x: 109
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_125
+			x: 118
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_126
+			x: 127
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_127
+			x: 136
+			y: 64
+			width: 8
+			height: 8
+		tilesheet_128
+			x: 1
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_129
+			x: 10
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_130
+			x: 19
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_131
+			x: 28
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_132
+			x: 37
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_133
+			x: 46
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_134
+			x: 55
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_135
+			x: 64
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_136
+			x: 73
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_137
+			x: 82
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_138
+			x: 91
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_139
+			x: 100
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_140
+			x: 109
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_141
+			x: 118
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_142
+			x: 127
+			y: 73
+			width: 8
+			height: 8
+		tilesheet_143
+			x: 136
+			y: 73
+			width: 8
+			height: 8
