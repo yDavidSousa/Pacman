@@ -89,8 +89,8 @@ mesh* maze_mesh;
 
 void application::initialize()
 {
-    tilesheet_texture = resource_system->load_texture("textures\\tilesheet.png");
-    standard_shader = resource_system->load_shader("shaders\\standard.glsl");
+    tilesheet_texture = resource_system->load_texture("textures/tilesheet.png");
+    standard_shader = resource_system->load_shader("shaders/standard.glsl");
 
     // MAZE STATIC
     float grid_offset_x = TARGET_VIEWPORT_WIDTH / 2.0f;
@@ -139,7 +139,7 @@ void application::initialize()
     {
         if (maze_data[i] == 12) continue;
 
-        sprite_metadata tile = resource_system->lookup_sprite("textures\\tilesheet.png", maze_data[i] + 48);
+        sprite_metadata tile = resource_system->lookup_sprite("textures/tilesheet.png", maze_data[i] + 48);
         texture* texture_ptr = resource_system->lookup_texture(tilesheet_texture);
 
         int texture_width = texture_ptr->get_width();
